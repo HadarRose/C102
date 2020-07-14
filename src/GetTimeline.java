@@ -6,7 +6,7 @@ import twitter4j.TwitterFactory;
 import java.util.List;
 
 public class GetTimeline {
-    public static void main(String[] args) throws TwitterException {
+    public static void getTimeline() throws TwitterException {
         Twitter twitter = TwitterFactory.getSingleton();
         List<Status> statusList = twitter.getHomeTimeline();
         System.out.println("Timeline retrieved");
