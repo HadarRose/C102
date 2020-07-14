@@ -2,6 +2,6 @@
 src/Setup.java
 config.properties
 out/
-src/C102_RunnerTest.java
+src/main/java/C102_RunnerTest.java
 .idea/
-src/twitter4j.properties
+src/main/resources/twitter4j.properties
