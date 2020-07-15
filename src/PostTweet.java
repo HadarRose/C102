@@ -7,5 +7,6 @@ public class PostTweet {
         Twitter twitter = TwitterFactory.getSingleton();
         StatusUpdate statusUpdate = new StatusUpdate(post);
         Status status = twitter.updateStatus(statusUpdate);
+        System.out.println("Successfully updated the status to [" + status.getText() + "].");
     }
 }
