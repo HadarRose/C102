@@ -3,10 +3,14 @@
  ### Dependencies and  Requirements 
  * JDK 8
  * [twitter4j](http://twitter4j.org/en/) 
- * Twitter Dev account (Note: to see the default account this lab is connected to, go 
- [here](https://twitter.com/HadarRozenberg))
+ * Twitter Dev [account](https://developer.twitter.com/en/portal/register/welcome)
  
 ### Instructions
+* Setup: In the root folder, create a *twitter4j.properties* that includes your credentials. You can make a copy of 
+*twitter4j_example.properties* in the same folder, and remove change the name to twitter4j.properties. 
+More on the twitter4j.properties file can be found [here](http://twitter4j.org/en/configuration.html).
+You will also need to generate these credentials by making a Twitter Dev (see Dependencies and Requirements). 
+
 * Compiling: ```mvn package``` or ```mvn clean package```
 
 * Posting a tweet:
