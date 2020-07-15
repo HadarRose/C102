@@ -18,15 +18,8 @@ public class C102_Runner {
                 System.out.println("You must specify post content.");
             }
         } else if (args[0].equals("timeline")){
-            if(args.length == 1){
-                GetTimeline.getTimeline();
-            } if(args.length == 5){
-                GetTimeline.getForeignTimeline(args[1], args[2], args[3], args[4]);
-            } else {
-                throw new IllegalArgumentException("Illegal number of arguments following 'timeline'. Please make sure " +
-                        "to include customer key, customer secret key, access token, and access token secret");
-            }
-        } else {
+            GetTimeline.getTimeline();
+        } else { // error: invalid argument
             throw new IllegalArgumentException("Argument must be either 'post' or 'timeline'.");
         }
 
