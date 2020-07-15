@@ -3,7 +3,6 @@ out/
 .idea/
 target/
 lib/
-src/main/java/C102_RunnerTest.java
 src/main/resources/twitter4j.properties
 keys.txt
 .gitattributes
