@@ -7,7 +7,7 @@
  [here](https://twitter.com/HadarRozenberg))
  
 ### Instructions
-* Compiling: ```mvn package```
+* Compiling: ```mvn package``` or ```mvn clean package```
 
 * Posting a tweet:
 ```java -jar C102_Runner.jar post "post content"``` <br> "post content" must adhere to Twitter's standards (i.e. not an empty 

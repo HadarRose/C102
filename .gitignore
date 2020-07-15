@@ -1,9 +1,9 @@
 
-src/Setup.java
 config.properties
 out/
-src/C102_RunnerTest.java
-C102.iml
 src/main/java/C102_RunnerTest.java
+C102.iml
 .idea/
 src/main/resources/twitter4j.properties
+keys.txt
+.gitattributes
