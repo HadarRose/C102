@@ -6,8 +6,9 @@
  * Twitter Dev [account](https://developer.twitter.com/en/portal/register/welcome)
  
 ### Instructions
-* Setup: In the root folder, create a *twitter4j.properties* that includes your credentials. You can make a copy of 
-*twitter4j_example.properties* in the same folder, and remove change the name to twitter4j.properties. 
+* Setup: In the root folder, create a *twitter4j.properties* that includes your credentials. You will need to make your 
+own file, but you can see twitter4j_example.properties, also in the root folder, for reference. Simply copy the content 
+of the example file to your new twitter4j.properties file, and fill in your credentials. 
 More on the twitter4j.properties file can be found [here](http://twitter4j.org/en/configuration.html).
 You will also need to generate these credentials by making a Twitter Dev (see Dependencies and Requirements). 
 
