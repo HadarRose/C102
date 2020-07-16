@@ -1,10 +1,11 @@
 
-src/Setup.java
+out/
+.idea/
+target/
+lib/
+twitter4j.properties
+keys.txt
+.gitattributes
 config.properties
-out/production/C102/Setup.class
-src/C102_Runner.java
-out/production/C102/C102_Runner.class
-src/C102_RunnerTest.java
-out/production/C102/C102_RunnerTest.class
+C102_Runner.jar
 C102.iml
-src/twitter4j.properties
