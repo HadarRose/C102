@@ -21,20 +21,20 @@ public class PostTweetTest {
 //    @Test(expected = IllegalArgumentException.class)
 //    public void noArgs() throws TwitterException {
 //        String[] noArgs = {};
-//        PostTweet.main(noArgs);
+//        resources.PostTweet.main(noArgs);
 //    }
 //
 //    // TEST: exception called for empty tweet
 //    @Test(expected = TwitterException.class)
 //    public void tweetEmpty() throws TwitterException {
 //        String[] empty = {""};
-//        PostTweet.main(empty);
+//        resources.PostTweet.main(empty);
 //    }
 //
 //    // TEST: exception called for long tweet
 //    @Test(expected = TwitterException.class)
 //    public void tweetTooLong() throws TwitterException {
-//        PostTweet.main(longTweet);
+//        resources.PostTweet.main(longTweet);
 //    }
 
 }

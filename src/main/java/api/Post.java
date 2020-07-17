@@ -1,30 +1,27 @@
+    // TODO: make sure you got rid of this
+
 package api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
 
-public class Post {
-    // TODO: change this class to actually match tweets, instead of the hello world program
-    private long id;
+import javax.validation.constraints.NotEmpty;
 
-    private String content;
+    public class Post {
+    /*@NotEmpty
+    @Length(max = 280, min=1)*/
+    private String message;
 
     public Post(){
-        // Jackson deserialization ?????
     }
 
-    public Post(long id, String content){
-        this.id = id;
-        this.content = content;
+    public Post(String message){
+        this.message = message;
     }
 
-    @JsonProperty
-    public long getId(){
-        return id;
-    }
 
     @JsonProperty
-    public String getContent(){
-        return content;
+    public String getMessage(){
+        return message;
     }
 }
