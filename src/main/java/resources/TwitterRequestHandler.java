@@ -3,14 +3,9 @@ package resources;
 import api.ErrorMessage;
 import api.ExceptionHandler;
 import api.StatusList;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.Length;
-import twitter4j.*;
+import api.Message;
 
-import javax.validation.ConstraintDeclarationException;
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import twitter4j.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
@@ -58,10 +53,7 @@ public class DropwizardResource {
         }
     }
 
-    public static class Message{
-        @JsonProperty("message")
-        public String message;
-    }
+
 
 
 

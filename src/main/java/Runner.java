@@ -1,7 +1,7 @@
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import resources.DropwizardResource;
+import resources.TwitterRequestHandler;
 
 public class DropwizardApplication extends Application<DropwizardConfig>{
     public static void main(String[] args) throws Exception{
@@ -16,7 +16,7 @@ public class DropwizardApplication extends Application<DropwizardConfig>{
 
     @Override
     public void run(DropwizardConfig config, Environment environment){
-        final DropwizardResource resource = new DropwizardResource();
+        final TwitterRequestHandler resource = new TwitterRequestHandler();
         environment.jersey().register(resource);
     }
 }
