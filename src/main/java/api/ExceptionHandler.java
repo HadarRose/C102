@@ -11,7 +11,7 @@ public class ExceptionHandler {
     /** Handles all exceptions by finding their type and handling them accordingly.
      * @return Response, response generated according to error
      * */
-    public static Response ExceptionHandler(Exception e){
+    public static Response ResponseBuilder(Exception e){
         ErrorMessage errorMessage;
         if(e instanceof TwitterException){
             errorMessage = TwitterException((TwitterException) e);

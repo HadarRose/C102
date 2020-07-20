@@ -33,7 +33,7 @@ public class TwitterRequestHandler {
             return Response.ok(new StatusList(statusList)).build();
         } catch (Exception e){
             LOGGER.error(e.getMessage(), e); // log error
-            return ExceptionHandler.ExceptionHandler(e);
+            return ExceptionHandler.ResponseBuilder(e);
         }
     }
 
@@ -49,7 +49,7 @@ public class TwitterRequestHandler {
             return Response.ok("Successfully updated the status to [" + status.getText() + "].").build();
         } catch (Exception e){
             LOGGER.error(e.getMessage(), e); // log error
-            return ExceptionHandler.ExceptionHandler(e);
+            return ExceptionHandler.ResponseBuilder(e);
         }
     }
 }

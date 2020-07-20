@@ -2,6 +2,6 @@
 // but in reality, we don't have anything to configure atm
 import io.dropwizard.Configuration;
 
-public class InputConfiguration extends Configuration{
+public class ApplicationConfiguration extends Configuration{
 
 }

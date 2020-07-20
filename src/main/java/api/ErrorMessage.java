@@ -2,7 +2,6 @@ package api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
 public class ErrorMessage {
     private int statusCode;
     private String message;

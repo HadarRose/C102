@@ -3,19 +3,19 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import resources.TwitterRequestHandler;
 
-public class Runner extends Application<InputConfiguration>{
+public class TwitterApplication extends Application<ApplicationConfiguration>{
     public static void main(String[] args) throws Exception{
-        new Runner().run(args);
+        new TwitterApplication().run(args);
     }
 
 
     @Override
-    public void initialize(Bootstrap<InputConfiguration> bootstrap){
+    public void initialize(Bootstrap<ApplicationConfiguration> bootstrap){
 
     }
 
     @Override
-    public void run(InputConfiguration config, Environment environment){
+    public void run(ApplicationConfiguration config, Environment environment){
         final TwitterRequestHandler resource = new TwitterRequestHandler();
         environment.jersey().register(resource);
     }
