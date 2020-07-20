@@ -16,11 +16,11 @@ import org.slf4j.LoggerFactory;
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
-public class DropwizardResource {
+public class TwitterRequestHandler {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ErrorMessage.class);
 
-    public DropwizardResource(){}
+    public TwitterRequestHandler(){}
 
     @GET
     @Path("/timeline")
@@ -52,10 +52,4 @@ public class DropwizardResource {
             return ExceptionHandler.ExceptionHandler(e);
         }
     }
-
-
-
-
-
-
 }

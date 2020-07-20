@@ -3,11 +3,9 @@ package api;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.core.Response;
-import java.util.Arrays;
 
 public class ExceptionHandler {
     public static final String GENERAL_ERROR = "Something went wrong.";
-    public static final int[] ACCEPTABLE_TWITTER_CODES = {403, 401};
 
 
     /** Handles all exceptions by finding their type and handling them accordingly.
@@ -31,14 +29,15 @@ public class ExceptionHandler {
      * */
     public static ErrorMessage TwitterException(TwitterException e){ // TODO: have better messages than the twitter4j ones
         int code = e.getStatusCode();
-        if(Arrays.stream(ExceptionHandler.ACCEPTABLE_TWITTER_CODES).anyMatch(i -> i == code)){ // check if code is an acceptable one
+        if(code == 403){ // forbidden error
             String message = e.getErrorMessage();
             if(e.getErrorCode() == 170){ // if this is a empty status problem
                 message = "No tweet content specified.";
             }
-
             return new ErrorMessage(code, message);
-        } else {
+        } else if(code == 401){ // unauthorized error
+            return new ErrorMessage(code, "Credentials are incorrect");
+        }else {
             return new ErrorMessage(code, ExceptionHandler.GENERAL_ERROR);
         }
     }
