@@ -1,7 +1,6 @@
 package api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import twitter4j.TwitterException;
 
 
 public class ErrorMessage {
@@ -10,10 +9,10 @@ public class ErrorMessage {
 
     public ErrorMessage(){}
 
-    public ErrorMessage(TwitterException e){
-        this.statusCode = e.getStatusCode();
-        this.message = e.getMessage();
-    }
+   public ErrorMessage(int code, String message){
+        this.statusCode = code;
+        this.message = message;
+   }
 
     @JsonProperty
     public int getStatusCode(){
