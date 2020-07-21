@@ -38,8 +38,6 @@ public class ExceptionHandler {
                 message = "No tweet content specified.";
             }
             return new ErrorMessage(code, message);
-        } else if (code == 401) { // unauthorized error
-            return new ErrorMessage(code, "Credentials are incorrect");
         } else {
             return new ErrorMessage(code, ExceptionHandler.GENERAL_ERROR);
         }
