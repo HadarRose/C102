@@ -6,6 +6,7 @@ import api.StatusList;
 import api.Message;
 
 import twitter4j.*;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
@@ -20,18 +21,19 @@ public class TwitterRequestHandler {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ErrorMessage.class);
 
-    public TwitterRequestHandler(){}
+    public TwitterRequestHandler() {
+    }
 
     @GET
     @Path("/timeline")
-    public Response getTimeline(){
+    public Response getTimeline() {
         LOGGER.info("GET request at /api/1.0/twitter/timeline was triggered");
         try {
             Twitter twitter = TwitterFactory.getSingleton(); // code originally from GetTimeline.java
             List<Status> statusList = twitter.getHomeTimeline();
             System.out.println("Timeline retrieved");
             return Response.ok(new StatusList(statusList)).build();
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e); // log error
             return ExceptionHandler.ResponseBuilder(e);
         }
@@ -39,14 +41,14 @@ public class TwitterRequestHandler {
 
     @POST
     @Path("/tweet")
-    public Response postTweet(Message post){
+    public Response postTweet(Message post) {
         LOGGER.info("POST request at /api/1.0/twitter/tweet was triggered");
-        try{
+        try {
             Twitter twitter = TwitterFactory.getSingleton(); // code originally from PostTweet.java
             StatusUpdate statusUpdate = new StatusUpdate(post.message);
             Status status = twitter.updateStatus(statusUpdate);
             return Response.ok(status).build();
-        } catch (Exception e){
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e); // log error
             return ExceptionHandler.ResponseBuilder(e);
         }

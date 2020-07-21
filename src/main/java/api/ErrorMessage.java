@@ -6,20 +6,21 @@ public class ErrorMessage {
     private int statusCode;
     private String message;
 
-    public ErrorMessage(){}
+    public ErrorMessage() {
+    }
 
-   public ErrorMessage(int code, String message){
+    public ErrorMessage(int code, String message) {
         this.statusCode = code;
         this.message = message;
-   }
+    }
 
     @JsonProperty
-    public int getStatusCode(){
+    public int getStatusCode() {
         return statusCode;
     }
 
     @JsonProperty
-    public String getMessage(){
+    public String getMessage() {
         return message;
     }
 }
