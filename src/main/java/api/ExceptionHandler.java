@@ -30,7 +30,7 @@ public class ExceptionHandler {
      * @return ErrorMessage, if status 403 the message will be specified by the twitter4j library.
      * Else, it will be the general error message
      */
-    public static ErrorMessage TwitterException(TwitterException e) { // TODO: have better messages than the twitter4j ones
+    public static ErrorMessage TwitterException(TwitterException e) {
         int code = e.getStatusCode();
         if (code == 403) { // forbidden error
             String message = e.getErrorMessage();

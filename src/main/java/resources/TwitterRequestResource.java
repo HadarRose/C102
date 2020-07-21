@@ -19,20 +19,23 @@ import org.slf4j.LoggerFactory;
 @Produces(MediaType.APPLICATION_JSON)
 public class TwitterRequestResource {
     public final String VERSION = "1.0";
-
+    private Twitter twitter;
     private static Logger LOGGER = LoggerFactory.getLogger(ErrorMessage.class);
 
     public TwitterRequestResource() {
+        twitter = TwitterFactory.getSingleton();
+    }
+
+    public TwitterRequestResource(Twitter twitter) {
+        this.twitter = twitter;
     }
 
     @GET
     @Path("/timeline")
     public Response getTimeline() {
-        LOGGER.info("GET request at /api/"+ VERSION +"/twitter/timeline was triggered");
+        LOGGER.info("GET request at /api/" + VERSION + "/twitter/timeline was triggered");
         try {
-            Twitter twitter = TwitterFactory.getSingleton(); // code originally from GetTimeline.java
             List<Status> statusList = twitter.getHomeTimeline();
-            System.out.println("Timeline retrieved");
             return Response.ok(new StatusList(statusList)).build();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e); // log error
@@ -43,9 +46,8 @@ public class TwitterRequestResource {
     @POST
     @Path("/tweet")
     public Response postTweet(Message post) {
-        LOGGER.info("POST request at /api/"+VERSION+"/twitter/tweet was triggered");
+        LOGGER.info("POST request at /api/" + VERSION + "/twitter/tweet was triggered");
         try {
-            Twitter twitter = TwitterFactory.getSingleton(); // code originally from PostTweet.java
             StatusUpdate statusUpdate = new StatusUpdate(post.message);
             Status status = twitter.updateStatus(statusUpdate);
             return Response.ok(status).build();
