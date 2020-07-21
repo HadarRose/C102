@@ -45,8 +45,7 @@ public class TwitterRequestHandler {
             Twitter twitter = TwitterFactory.getSingleton(); // code originally from PostTweet.java
             StatusUpdate statusUpdate = new StatusUpdate(post.message);
             Status status = twitter.updateStatus(statusUpdate);
-            System.out.println("Successfully updated the status to [" + status.getText() + "].");
-            return Response.ok("Successfully updated the status to [" + status.getText() + "].").build();
+            return Response.ok(status).build();
         } catch (Exception e){
             LOGGER.error(e.getMessage(), e); // log error
             return ExceptionHandler.ResponseBuilder(e);
