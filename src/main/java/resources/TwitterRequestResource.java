@@ -17,17 +17,18 @@ import org.slf4j.LoggerFactory;
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
-public class TwitterRequestHandler {
+public class TwitterRequestResource {
+    public final String VERSION = "1.0";
 
     private static Logger LOGGER = LoggerFactory.getLogger(ErrorMessage.class);
 
-    public TwitterRequestHandler() {
+    public TwitterRequestResource() {
     }
 
     @GET
     @Path("/timeline")
     public Response getTimeline() {
-        LOGGER.info("GET request at /api/1.0/twitter/timeline was triggered");
+        LOGGER.info("GET request at /api/"+ VERSION +"/twitter/timeline was triggered");
         try {
             Twitter twitter = TwitterFactory.getSingleton(); // code originally from GetTimeline.java
             List<Status> statusList = twitter.getHomeTimeline();
@@ -42,7 +43,7 @@ public class TwitterRequestHandler {
     @POST
     @Path("/tweet")
     public Response postTweet(Message post) {
-        LOGGER.info("POST request at /api/1.0/twitter/tweet was triggered");
+        LOGGER.info("POST request at /api/"+VERSION+"/twitter/tweet was triggered");
         try {
             Twitter twitter = TwitterFactory.getSingleton(); // code originally from PostTweet.java
             StatusUpdate statusUpdate = new StatusUpdate(post.message);
