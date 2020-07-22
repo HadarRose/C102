@@ -50,7 +50,6 @@ public class ExceptionHandlerTest {
         ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
         assertEquals(eh.GENERAL_ERROR, errorMessage.getMessage());
         verify(eh).TwitterException(any(TwitterException.class));
-
     }
 
     // test general forbidden twitterexception
