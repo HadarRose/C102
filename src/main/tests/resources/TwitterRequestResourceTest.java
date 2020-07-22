@@ -1,100 +1,57 @@
 package resources;
 
+import api.ExceptionHandler;
 import api.Message;
 import org.junit.Test;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
-import twitter4j.conf.ConfigurationBuilder;
-
+import twitter4j.TwitterException;
 import javax.ws.rs.core.Response;
-
-import java.sql.Timestamp;
-
 import static org.junit.Assert.*;
-
 import static org.mockito.Mockito.*;
 
-//@RunWith(MockitoJUnitRunner.class)
 public class TwitterRequestResourceTest {
     Twitter mockedTwitter = mock(Twitter.class);
+    ExceptionHandler mockedHandler = mock(ExceptionHandler.class);
 
 
     /*TIMELINE TESTS*/
-    // tests call to rootURI/timeline with default constructor
+    // tests that if twitter object doesn't throw an error, the response is OK and ResponseBuilder isn't called
     @Test
-    public void validTimeline() {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource();
+    public void validTimeline() throws TwitterException {
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
+        when(mockedTwitter.getHomeTimeline()).thenReturn(null);
         Response response = twitterRequestResource.getTimeline();
         assertEquals(200, response.getStatus());
+        verify(mockedHandler, never()).ResponseBuilder(any(Exception.class));
     }
 
-    // tests call to rootURI/timeline with bad credentials passed thru constructor
+    // tests that if twitter object throws an exception, responsebuilder is called
     @Test
-    public void invalidTimeline() {
-        // create configbuilder, twitterfactory, and set instance as mockedTwitter
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true)
-                .setOAuthAccessTokenSecret("XXXXXXXXXX");
-        TwitterFactory tf = new TwitterFactory(cb.build());
-        mockedTwitter = tf.getInstance();
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter);
+    public void invalidTimeline() throws TwitterException {
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
+        when(mockedTwitter.getHomeTimeline()).thenThrow(Exception.class);
         Response response = twitterRequestResource.getTimeline();
-        assertEquals(401, response.getStatus());
+        verify(mockedHandler, times(1)).ResponseBuilder(any(Exception.class));
     }
 
     /*TWEET TESTS*/
-    // tests call to rootURI/tweet with valid credentials and message
+    // tests that if twitter object doesn't throw an error, the response is OK and ResponseBuilder isn't called
     @Test
-    public void validPost() {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource();
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis()); // add to post to avoid duplication error
-        Message m = new Message("Hello, right now it's: " + timestamp.toString());
-        Response response = twitterRequestResource.postTweet(m);
+    public void validPost() throws TwitterException {
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
+        when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenReturn(null);
+        Response response = twitterRequestResource.postTweet(new Message("Hello!"));
         assertEquals(200, response.getStatus());
+        verify(mockedHandler, never()).ResponseBuilder(any(Exception.class));
     }
 
-    // tests call to rootURI/tweet with invalid credentials
+    // tests that if twitter object throws an exception, responsebuilder is called
     @Test
-    public void invalidCreds() {
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true)
-                .setOAuthAccessTokenSecret("XXXXXXXXXX");
-        TwitterFactory tf = new TwitterFactory(cb.build());
-        mockedTwitter = tf.getInstance();
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter);
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis()); // add to post to avoid duplication error
-        Message m = new Message("Hello, right now it's: " + timestamp.toString());
-        Response response = twitterRequestResource.postTweet(m);
-        assertEquals(401, response.getStatus());
+    public void invalidPost() throws TwitterException {
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
+        when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenThrow(Exception.class);
+        Response response = twitterRequestResource.postTweet(new Message("Hello!"));
+        verify(mockedHandler, times(1)).ResponseBuilder(any(Exception.class));
     }
-
-    // tests call to rootURI/tweet with valid credentials and null message
-    @Test
-    public void nullMessage() {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource();
-        Response response = twitterRequestResource.postTweet(null);
-        assertEquals(500, response.getStatus());
-    }
-
-    // tests call to rootURI/tweet with valid credentials and empty message
-    @Test
-    public void emptyMessage() {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource();
-        Message m = new Message("");
-        Response response = twitterRequestResource.postTweet(m);
-        assertEquals(403, response.getStatus());
-    }
-
-    // tests call to rootURI/tweet with valid credentials and message, but sending the same message twice
-    @Test
-    public void duplicatePost() {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource();
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis()); // add to post to avoid duplication error
-        Message m = new Message("Hello, right now it's: " + timestamp.toString());
-        Response response = twitterRequestResource.postTweet(m);
-        assertEquals(200, response.getStatus());
-        response = twitterRequestResource.postTweet(m); // send the same post again
-        assertEquals(403, response.getStatus());
-    }
-
 }

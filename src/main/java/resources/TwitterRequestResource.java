@@ -20,14 +20,17 @@ import org.slf4j.LoggerFactory;
 public class TwitterRequestResource {
     public final String VERSION = "1.0";
     private Twitter twitter;
+    private ExceptionHandler exceptionHandler;
     private static Logger LOGGER = LoggerFactory.getLogger(ErrorMessage.class);
 
     public TwitterRequestResource() {
         twitter = TwitterFactory.getSingleton();
+        exceptionHandler = new ExceptionHandler();
     }
 
-    public TwitterRequestResource(Twitter twitter) {
+    public TwitterRequestResource(Twitter twitter, ExceptionHandler exceptionHandler) {
         this.twitter = twitter;
+        this.exceptionHandler = exceptionHandler;
     }
 
     @GET
@@ -39,7 +42,7 @@ public class TwitterRequestResource {
             return Response.ok(new StatusList(statusList)).build();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e); // log error
-            return ExceptionHandler.ResponseBuilder(e);
+            return exceptionHandler.ResponseBuilder(e);
         }
     }
 
@@ -53,7 +56,7 @@ public class TwitterRequestResource {
             return Response.ok(status).build();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e); // log error
-            return ExceptionHandler.ResponseBuilder(e);
+            return exceptionHandler.ResponseBuilder(e);
         }
     }
 }

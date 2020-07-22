@@ -12,7 +12,7 @@ public class ExceptionHandler {
      *
      * @return Response, response generated according to error
      */
-    public static Response ResponseBuilder(Exception e) {
+    public Response ResponseBuilder(Exception e) {
         ErrorMessage errorMessage;
         if (e instanceof TwitterException) {
             errorMessage = TwitterException((TwitterException) e);
@@ -30,7 +30,7 @@ public class ExceptionHandler {
      * @return ErrorMessage, if status 403 the message will be specified by the twitter4j library.
      * Else, it will be the general error message
      */
-    public static ErrorMessage TwitterException(TwitterException e) {
+    public ErrorMessage TwitterException(TwitterException e) {
         int code = e.getStatusCode();
         if (code == 403) { // forbidden error
             String message = e.getErrorMessage();
@@ -48,7 +48,7 @@ public class ExceptionHandler {
      *
      * @return ErrorMessage, status 500 and message is the general error message
      */
-    public static ErrorMessage GenericException(Exception e) {
+    public ErrorMessage GenericException(Exception e) {
         return new ErrorMessage(500, ExceptionHandler.GENERAL_ERROR);
     }
 }
