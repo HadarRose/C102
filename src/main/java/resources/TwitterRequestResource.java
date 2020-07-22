@@ -1,9 +1,9 @@
 package resources;
 
-import api.ErrorMessage;
-import api.ExceptionHandler;
-import api.StatusList;
-import api.Message;
+import representations.ErrorMessage;
+import handlers.ExceptionHandler;
+import representations.StatusList;
+import representations.Message;
 
 import twitter4j.*;
 

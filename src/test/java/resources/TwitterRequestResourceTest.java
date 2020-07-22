@@ -1,15 +1,13 @@
 package resources;
 
-import api.ExceptionHandler;
-import api.Message;
-import api.StatusList;
+import handlers.ExceptionHandler;
+import representations.Message;
+import representations.StatusList;
 import org.junit.Before;
 import org.junit.Test;
-import resources.TwitterRequestResource;
 import twitter4j.*;
 
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
