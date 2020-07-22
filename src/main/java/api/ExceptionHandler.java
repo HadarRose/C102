@@ -6,6 +6,8 @@ import javax.ws.rs.core.Response;
 
 public class ExceptionHandler {
     public static final String GENERAL_ERROR = "Something went wrong.";
+    public static final String BODY_ERROR = "There was an issue reading the body of your request";
+    public static final String NO_CONTENT_ERROR = "No tweet content specified.";
 
     /**
      * Handles all exceptions by finding their type and handling them accordingly.
@@ -17,7 +19,7 @@ public class ExceptionHandler {
         if (e instanceof TwitterException) {
             errorMessage = TwitterException((TwitterException) e);
         } else if (e instanceof NullPointerException) {
-            errorMessage = new ErrorMessage(500, "There was an issue reading the body of your request");
+            errorMessage = new ErrorMessage(500, this.BODY_ERROR);
         } else {
             errorMessage = GenericException(e);
         }
@@ -35,7 +37,7 @@ public class ExceptionHandler {
         if (code == 403) { // forbidden error
             String message = e.getErrorMessage();
             if (e.getErrorCode() == 170) { // if this is a empty status problem
-                message = "No tweet content specified.";
+                message = this.NO_CONTENT_ERROR;
             }
             return new ErrorMessage(code, message);
         } else {

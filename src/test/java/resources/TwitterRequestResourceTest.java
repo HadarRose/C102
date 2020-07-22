@@ -3,7 +3,9 @@ package resources;
 import api.ExceptionHandler;
 import api.Message;
 import api.StatusList;
+import org.junit.Before;
 import org.junit.Test;
+import resources.TwitterRequestResource;
 import twitter4j.*;
 
 import javax.ws.rs.core.Response;
@@ -13,9 +15,13 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class TwitterRequestResourceTest {
-    Twitter mockedTwitter = mock(Twitter.class);
-    ExceptionHandler mockedHandler = mock(ExceptionHandler.class);
-// TODO: test responses fully
+    Twitter mockedTwitter;
+    ExceptionHandler mockedHandler;
+
+    @Before public void initialize(){
+        mockedTwitter = mock(Twitter.class);
+        mockedHandler = mock(ExceptionHandler.class);
+    }
 
     /*TIMELINE TESTS*/
     // tests that if twitter object doesn't throw an error, the response is OK and ResponseBuilder isn't called
@@ -29,7 +35,6 @@ public class TwitterRequestResourceTest {
         verify(mockedHandler, never()).ResponseBuilder(any(Exception.class));
         StatusList statusList = (StatusList) response.getEntity();
         assertEquals(mockedList, statusList.getStatusList());
-
     }
 
     // tests that if twitter object throws an exception, responsebuilder is called

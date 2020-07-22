@@ -1,7 +1,8 @@
 package api;
 
+import api.ErrorMessage;
+import api.ExceptionHandler;
 import org.junit.Test;
-import org.mockito.internal.stubbing.BaseStubbing;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.core.Response;
@@ -29,7 +30,7 @@ public class ExceptionHandlerTest {
         Response response = eh.ResponseBuilder(new NullPointerException());
         assertEquals(500, response.getStatus());
         ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
-        assertEquals("There was an issue reading the body of your request", errorMessage.getMessage());
+        assertEquals(eh.BODY_ERROR, errorMessage.getMessage());
     }
 
     // test general twitterexception
@@ -69,7 +70,7 @@ public class ExceptionHandlerTest {
         Response response = eh.ResponseBuilder(mockedException);
         assertEquals(403, response.getStatus());
         ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
-        assertEquals("No tweet content specified.", errorMessage.getMessage());
+        assertEquals(eh.NO_CONTENT_ERROR, errorMessage.getMessage());
     }
 
 
