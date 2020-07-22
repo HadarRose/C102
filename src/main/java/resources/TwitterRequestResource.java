@@ -51,7 +51,7 @@ public class TwitterRequestResource {
     public Response postTweet(Message post) {
         LOGGER.info("POST request at /api/" + VERSION + "/twitter/tweet was triggered");
         try {
-            StatusUpdate statusUpdate = new StatusUpdate(post.message);
+            StatusUpdate statusUpdate = new StatusUpdate(post.getMessage());
             Status status = twitter.updateStatus(statusUpdate);
             return Response.ok(status).build();
         } catch (Exception e) {

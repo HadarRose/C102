@@ -13,8 +13,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class TwitterRequestResourceTest {
-    Twitter mockedTwitter;
-    ExceptionHandler mockedHandler;
+    private Twitter mockedTwitter;
+    private ExceptionHandler mockedHandler;
 
     @Before public void initialize(){
         mockedTwitter = mock(Twitter.class);
