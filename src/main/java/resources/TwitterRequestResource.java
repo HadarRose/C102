@@ -23,6 +23,7 @@ public class TwitterRequestResource {
     private ExceptionHandler exceptionHandler;
     private static Logger LOGGER = LoggerFactory.getLogger(ErrorMessage.class);
 
+    // CONSTRUCTORS
     public TwitterRequestResource() {
         twitter = TwitterFactory.getSingleton();
         exceptionHandler = new ExceptionHandler();
@@ -32,7 +33,15 @@ public class TwitterRequestResource {
         this.twitter = twitter;
         this.exceptionHandler = exceptionHandler;
     }
+    // GETTERS
+    public Twitter getTwitter(){
+        return this.twitter;
+    }
 
+    public ExceptionHandler getExceptionHandler(){
+        return this.exceptionHandler;
+    }
+    // API CALLS
     @GET
     @Path("/timeline")
     public Response getTimeline() {

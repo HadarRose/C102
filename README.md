@@ -19,3 +19,5 @@ You will also need to generate these credentials by making a Twitter Dev (see De
         * Request body: needs to be a JSON of the form {"message": "your message goes here"}
         * you post must adhere to Twitter's standards (i.e. not an empty string, not above 280 characters)
     * Retrieving timeline: http://localhost:8080/api/1.0/twitter/timeline.
+* **Generating Test Coverage Results:**: run ```mvm test```, ```mvn install``` or ```mvn package```. 
+Go to target/site/jacoco to see the reports. To view general report open index.html with a browser.
