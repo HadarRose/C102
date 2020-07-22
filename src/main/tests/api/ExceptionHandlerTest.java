@@ -12,10 +12,6 @@ import static org.mockito.Mockito.*;
 public class ExceptionHandlerTest {
     TwitterException mockedException = mock(TwitterException.class);
 
-    // branches twitter e, null pointer e, other
-    // twitter e branches at code 403 other
-    // code 403 branches at errorcode 170 other
-
     // test generic error
     @Test
     public void generalError(){
