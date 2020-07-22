@@ -1,6 +1,6 @@
 package handlers;
 
-import representations.ErrorMessage;
+import model.ErrorMessage;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.core.Response;

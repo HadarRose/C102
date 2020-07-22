@@ -1,8 +1,8 @@
 package resources;
 
 import handlers.ExceptionHandler;
-import representations.Message;
-import representations.StatusList;
+import model.Message;
+import model.StatusList;
 import org.junit.Before;
 import org.junit.Test;
 import twitter4j.*;

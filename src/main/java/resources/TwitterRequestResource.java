@@ -1,9 +1,9 @@
 package resources;
 
-import representations.ErrorMessage;
+import model.ErrorMessage;
 import handlers.ExceptionHandler;
-import representations.StatusList;
-import representations.Message;
+import model.StatusList;
+import model.Message;
 
 import twitter4j.*;
 
