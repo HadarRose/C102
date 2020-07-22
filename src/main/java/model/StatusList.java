@@ -1,4 +1,4 @@
-package api;
+package model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import twitter4j.Status;

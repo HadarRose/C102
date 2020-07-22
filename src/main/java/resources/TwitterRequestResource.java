@@ -1,9 +1,9 @@
 package resources;
 
-import api.ErrorMessage;
-import api.ExceptionHandler;
-import api.StatusList;
-import api.Message;
+import model.ErrorMessage;
+import handlers.ExceptionHandler;
+import model.StatusList;
+import model.Message;
 
 import twitter4j.*;
 
@@ -19,39 +19,44 @@ import org.slf4j.LoggerFactory;
 @Produces(MediaType.APPLICATION_JSON)
 public class TwitterRequestResource {
     public final String VERSION = "1.0";
-
+    private Twitter twitter;
+    private ExceptionHandler exceptionHandler;
     private static Logger LOGGER = LoggerFactory.getLogger(ErrorMessage.class);
 
     public TwitterRequestResource() {
+        twitter = TwitterFactory.getSingleton();
+        exceptionHandler = new ExceptionHandler();
+    }
+
+    public TwitterRequestResource(Twitter twitter, ExceptionHandler exceptionHandler) {
+        this.twitter = twitter;
+        this.exceptionHandler = exceptionHandler;
     }
 
     @GET
     @Path("/timeline")
     public Response getTimeline() {
-        LOGGER.info("GET request at /api/"+ VERSION +"/twitter/timeline was triggered");
+        LOGGER.info("GET request at /api/" + VERSION + "/twitter/timeline was triggered");
         try {
-            Twitter twitter = TwitterFactory.getSingleton(); // code originally from GetTimeline.java
             List<Status> statusList = twitter.getHomeTimeline();
-            System.out.println("Timeline retrieved");
             return Response.ok(new StatusList(statusList)).build();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e); // log error
-            return ExceptionHandler.ResponseBuilder(e);
+            return exceptionHandler.ResponseBuilder(e);
         }
     }
 
     @POST
     @Path("/tweet")
     public Response postTweet(Message post) {
-        LOGGER.info("POST request at /api/"+VERSION+"/twitter/tweet was triggered");
+        LOGGER.info("POST request at /api/" + VERSION + "/twitter/tweet was triggered");
         try {
-            Twitter twitter = TwitterFactory.getSingleton(); // code originally from PostTweet.java
-            StatusUpdate statusUpdate = new StatusUpdate(post.message);
+            StatusUpdate statusUpdate = new StatusUpdate(post.getMessage());
             Status status = twitter.updateStatus(statusUpdate);
             return Response.ok(status).build();
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e); // log error
-            return ExceptionHandler.ResponseBuilder(e);
+            return exceptionHandler.ResponseBuilder(e);
         }
     }
 }
