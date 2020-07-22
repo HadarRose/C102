@@ -16,7 +16,8 @@ public class TwitterRequestResourceTest {
     private Twitter mockedTwitter;
     private ExceptionHandler mockedHandler;
 
-    @Before public void initialize(){
+    @Before
+    public void initialize() {
         mockedTwitter = mock(Twitter.class);
         mockedHandler = mock(ExceptionHandler.class);
     }
