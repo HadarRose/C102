@@ -10,3 +10,4 @@ config.properties
 C102_Runner.jar
 C102.iml
 dependency-reduced-pom.xml
+configuration.yml

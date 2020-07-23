@@ -4,12 +4,14 @@ import model.ErrorMessage;
 import handlers.ExceptionHandler;
 import model.StatusList;
 import model.Message;
+import configuration.Configuration;
 
 import twitter4j.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -25,7 +27,7 @@ public class TwitterRequestResource {
 
     // CONSTRUCTORS
     public TwitterRequestResource() {
-        twitter = TwitterFactory.getSingleton();
+        twitter = Configuration.createTwitter();
         exceptionHandler = new ExceptionHandler();
     }
 
