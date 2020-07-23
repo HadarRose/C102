@@ -26,28 +26,42 @@ public class Configuration extends io.dropwizard.Configuration {
     private static Logger logger = LoggerFactory.getLogger(Configuration.class);
     private String path;
 
+    /** Constructor, sets path to default value
+     * */
     public Configuration() {
         this.path = "./config.yml";
         logger.debug("Configuration created with empty constructor");
     }
 
+    /** Constructor
+     * @param path: value for Configuration's path property
+     * */
     public Configuration(String path){
         this.path = path;
         logger.debug("Configuration created with path = {}", path);
     }
 
+    /** Loads twitter credential keys from file specified by path property
+     * @return Configuration with private key properties set to loaded key values
+     * */
     private Configuration loadKeys() {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
+            logger.debug("loadKeys() attempting to read values from: {}", this.path);
             return mapper.readValue(new File(this.path), Configuration.class);
         } catch (Exception e) {
+            logger.debug("Path when exception thrown: {}", this.path);
             logger.error(e.getMessage(), e);
             return null;
         }
     }
 
+    /** Creates Twitter object using a Configuration's key properties.
+     * @return Twitter with loaded credentials
+     * */
     public Twitter createTwitter() {
         Configuration c = this.loadKeys();
+        logger.debug("createTwitter loaded keys successfully from {}", this.path);
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true)
                 .setOAuthConsumerKey(c.oauthconsumerkey)
