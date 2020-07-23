@@ -3,6 +3,9 @@ package configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import resources.TwitterRequestResource;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
@@ -19,13 +22,17 @@ public class Configuration {
     @JsonProperty
     private String oauthaccesstokensecret;
 
+    private static Logger logger = LoggerFactory.getLogger(Configuration.class);
     private String path;
+
     public Configuration() {
         this.path = "./configuration.yml";
+        logger.debug("Configuration created with empty constructor");
     }
 
     public Configuration(String path){
         this.path = path;
+        logger.debug("Configuration created with path = {}", path);
     }
 
     private Configuration loadKeys() {
@@ -33,7 +40,7 @@ public class Configuration {
         try {
             return mapper.readValue(new File(this.path), Configuration.class);
         } catch (Exception e) {
-            // TODO: log error when i get to logging lab
+            logger.error(e.getMessage(), e);
             return null;
         }
     }
