@@ -27,7 +27,8 @@ public class TwitterRequestResource {
 
     // CONSTRUCTORS
     public TwitterRequestResource() {
-        twitter = Configuration.createTwitter();
+        Configuration c = new Configuration();
+        twitter = c.createTwitter();
         exceptionHandler = new ExceptionHandler();
     }
 

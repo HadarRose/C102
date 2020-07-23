@@ -19,21 +19,27 @@ public class Configuration {
     @JsonProperty
     private String oauthaccesstokensecret;
 
+    private String path;
     public Configuration() {
+        this.path = "./configuration.yml";
     }
 
-    private static Configuration loadKeys() {
+    public Configuration(String path){
+        this.path = path;
+    }
+
+    private Configuration loadKeys() {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
-            return mapper.readValue(new File("./configuration.yml"), Configuration.class);
+            return mapper.readValue(new File(this.path), Configuration.class);
         } catch (Exception e) {
             // TODO: log error when i get to logging lab
             return null;
         }
     }
 
-    public static Twitter createTwitter() {
-        Configuration c = Configuration.loadKeys();
+    public Twitter createTwitter() {
+        Configuration c = this.loadKeys();
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true)
                 .setOAuthConsumerKey(c.oauthconsumerkey)
