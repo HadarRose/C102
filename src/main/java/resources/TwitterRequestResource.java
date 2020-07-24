@@ -10,6 +10,7 @@ import twitter4j.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -18,15 +19,16 @@ import org.slf4j.LoggerFactory;
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class TwitterRequestResource {
+    private static Logger logger = LoggerFactory.getLogger(TwitterRequestResource.class);
+
     public final String VERSION = "1.0";
     private Twitter twitter;
     private ExceptionHandler exceptionHandler;
-    private static Logger logger = LoggerFactory.getLogger(TwitterRequestResource.class);
 
     // CONSTRUCTORS
     /** Constructor, sets up twitter using default configuration settings and exceptionHandler to a new ExceptionHandler
      * */
-    public TwitterRequestResource() {
+    public TwitterRequestResource() throws IOException {
         ApplicationConfiguration c = new ApplicationConfiguration();
         twitter = c.createTwitter();
         exceptionHandler = new ExceptionHandler();
@@ -72,8 +74,7 @@ public class TwitterRequestResource {
             logger.debug("getTimline() is returning response: {}", r.toString());
             return r;
         } catch (Exception e) {
-            logger.debug("Twitter when exception thrown: {}", this.twitter.toString());
-            logger.error(e.getMessage(), e); // log error
+            logger.error("Exception was thrown: {}. Twitter corresponding to this event: {}.", e.getMessage(), this.twitter.toString(), e);
             return exceptionHandler.ResponseBuilder(e);
         }
     }

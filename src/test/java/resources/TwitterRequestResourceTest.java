@@ -9,6 +9,8 @@ import twitter4j.*;
 
 import javax.ws.rs.core.Response;
 
+import java.io.IOException;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -82,7 +84,7 @@ public class TwitterRequestResourceTest {
     /*ADDITIONAL TESTS*/
     // tests that getters return values correctly
     @Test
-    public void testGetters(){
+    public void testGetters() {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
         assertEquals(mockedTwitter, twitterRequestResource.getTwitter());
         assertEquals(mockedHandler, twitterRequestResource.getExceptionHandler());
@@ -90,7 +92,7 @@ public class TwitterRequestResourceTest {
 
     // tests that empty constructor correctly initializes a twitter and an exceptionhandler
     @Test
-    public void testEmptyConstructor(){
+    public void testEmptyConstructor() throws IOException {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource();
         assertNotNull(twitterRequestResource.getTwitter());
         assertNotNull(twitterRequestResource.getExceptionHandler());

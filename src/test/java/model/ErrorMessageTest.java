@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 public class ErrorMessageTest {
     // tests that a new object was created
     @Test
-    public void testEmptyConstructor(){
+    public void testEmptyConstructor() {
         ErrorMessage e = new ErrorMessage();
         assertNotNull(e);
         assertNull(e.getMessage());

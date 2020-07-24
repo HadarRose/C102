@@ -2,6 +2,7 @@ package configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import io.dropwizard.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.Twitter;
@@ -9,8 +10,11 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.File;
+import java.io.IOException;
 
-public class ApplicationConfiguration extends io.dropwizard.Configuration {
+public class ApplicationConfiguration extends Configuration {
+    private static Logger logger = LoggerFactory.getLogger(ApplicationConfiguration.class);
+
     @JsonProperty
     private String oauthconsumerkey;
     @JsonProperty
@@ -20,7 +24,6 @@ public class ApplicationConfiguration extends io.dropwizard.Configuration {
     @JsonProperty
     private String oauthaccesstokensecret;
 
-    private static Logger logger = LoggerFactory.getLogger(ApplicationConfiguration.class);
     private String path;
 
     /** Constructor, sets path to default value
@@ -41,22 +44,22 @@ public class ApplicationConfiguration extends io.dropwizard.Configuration {
     /** Loads twitter credential keys from file specified by path property
      * @return Configuration with private key properties set to loaded key values
      * */
-    private ApplicationConfiguration loadKeys() {
+    private ApplicationConfiguration loadKeys() throws IOException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
             logger.debug("loadKeys() attempting to read values from: {}", this.path);
             return mapper.readValue(new File(this.path), ApplicationConfiguration.class);
-        } catch (Exception e) {
-            logger.debug("Path when exception thrown: {}", this.path);
-            logger.error(e.getMessage(), e);
-            return null;
+        } catch (IOException e) {
+            logger.error("Exception was thrown: {}. Path corresponding to this event: {}.", e.getMessage(), this.path, e);
+            throw e;
         }
     }
+
 
     /** Creates Twitter object using a Configuration's key properties.
      * @return Twitter with loaded credentials
      * */
-    public Twitter createTwitter() {
+    public Twitter createTwitter() throws IOException {
         ApplicationConfiguration c = this.loadKeys();
         logger.debug("createTwitter loaded keys successfully from {}", this.path);
         ConfigurationBuilder cb = new ConfigurationBuilder();
