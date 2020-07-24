@@ -25,7 +25,6 @@ public class TwitterRequestResource {
     private Twitter twitter;
     private ExceptionHandler exceptionHandler;
 
-    // CONSTRUCTORS
     /** Constructor, sets up twitter using default configuration settings and exceptionHandler to a new ExceptionHandler
      * */
     public TwitterRequestResource() throws IOException {
@@ -45,7 +44,6 @@ public class TwitterRequestResource {
         logger.debug("TwitterRequestResource created with twitter = {} and exceptionHandler = {}", twitter.toString(), exceptionHandler.toString());
     }
 
-    // GETTERS
     /** @return Twitter. The object's twitter property.
      * */
     public Twitter getTwitter(){
@@ -60,7 +58,6 @@ public class TwitterRequestResource {
         return this.exceptionHandler;
     }
 
-    // API CALLS
     /** API call on /timeline
      * @return Response. Contains list of statuses if successful, or error message if not.
      * */
