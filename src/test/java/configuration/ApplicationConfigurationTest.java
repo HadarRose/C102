@@ -3,10 +3,10 @@ package configuration;
 import org.junit.Test;
 import twitter4j.Twitter;
 
-public class ConfigurationTest {
+public class ApplicationConfigurationTest {
     @Test(expected = Exception.class)
     public void loadKeysTest(){
-        Configuration c = new Configuration("filethatdoesntexist");
+        ApplicationConfiguration c = new ApplicationConfiguration("filethatdoesntexist");
         Twitter t = c.createTwitter();
     }
 }

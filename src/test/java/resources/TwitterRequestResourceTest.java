@@ -68,6 +68,17 @@ public class TwitterRequestResourceTest {
         verify(mockedHandler, times(1)).ResponseBuilder(any(Exception.class));
     }
 
+    // tests that if message object throw an exception, response builder is called
+    @Test
+    public void invalidMessage() throws TwitterException {
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
+        when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenThrow(Exception.class);
+        Message m = mock(Message.class);
+        when(m.getMessage()).thenThrow(Exception.class);
+        Response response = twitterRequestResource.postTweet(m);
+        verify(mockedHandler, times(1)).ResponseBuilder(any(Exception.class));
+    }
+
     /*ADDITIONAL TESTS*/
     // tests that getters return values correctly
     @Test

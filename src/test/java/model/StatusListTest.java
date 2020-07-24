@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 public class StatusListTest {
     // tests that a new object was created
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testEmptyConstructor(){
         StatusList list = new StatusList();
         assertNotNull(list);

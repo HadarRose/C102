@@ -1,6 +1,6 @@
 package resources;
 
-import configuration.Configuration;
+import configuration.ApplicationConfiguration;
 import handlers.ExceptionHandler;
 import model.StatusList;
 import model.Message;
@@ -27,7 +27,7 @@ public class TwitterRequestResource {
     /** Constructor, sets up twitter using default configuration settings and exceptionHandler to a new ExceptionHandler
      * */
     public TwitterRequestResource() {
-        Configuration c = new Configuration();
+        ApplicationConfiguration c = new ApplicationConfiguration();
         twitter = c.createTwitter();
         exceptionHandler = new ExceptionHandler();
         logger.debug("TwitterRequestResource created with empty constructor");
