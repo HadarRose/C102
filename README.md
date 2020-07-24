@@ -6,8 +6,8 @@
  * Twitter Dev [account](https://developer.twitter.com/en/portal/register/welcome)
  
 ### Instructions
-* **Setup:** In the root folder, create a *configuration.yml* that includes your credentials. You will need to make your 
-own file, but you can see *configuration_example*.yml, also in the root folder, for reference. Simply copy the content 
+* **Setup:** In the root folder, create a *config.yml* that includes your credentials. You will need to make your 
+own file, but you can see *config_example*.yml, also in the root folder, for reference. Simply copy the content 
 of the example file to your new configuration.yml file, and replace the XXX placeholders with your credentials. 
 You will also need to generate these credentials by making a Twitter Dev (see Dependencies and Requirements). 
 

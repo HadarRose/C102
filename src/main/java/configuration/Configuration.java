@@ -1,4 +1,5 @@
-package configuration;
+package configuration;// This class exists because dropwizard application's .run() function is dependant on having a config class
+// but in reality, we don't have anything to configure atm
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,7 +10,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import java.io.File;
 
-public class Configuration {
+public class Configuration extends io.dropwizard.Configuration {
     @JsonProperty
     private String oauthconsumerkey;
     @JsonProperty
@@ -21,7 +22,7 @@ public class Configuration {
 
     private String path;
     public Configuration() {
-        this.path = "./configuration.yml";
+        this.path = "./config.yml";
     }
 
     public Configuration(String path){
