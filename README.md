@@ -6,10 +6,9 @@
  * Twitter Dev [account](https://developer.twitter.com/en/portal/register/welcome)
  
 ### Instructions
-* **Setup:** In the root folder, create a *twitter4j.properties* that includes your credentials. You will need to make your 
-own file, but you can see twitter4j_example.properties, also in the root folder, for reference. Simply copy the content 
-of the example file to your new twitter4j.properties file, and fill in your credentials. 
-More on the twitter4j.properties file can be found [here](http://twitter4j.org/en/configuration.html).
+* **Setup:** In the root folder, create a *config.yml* that includes your credentials. You will need to make your 
+own file, but you can see *config_example*.yml, also in the root folder, for reference. Simply copy the content 
+of the example file to your new configuration.yml file, and replace the XXX placeholders with your credentials. 
 You will also need to generate these credentials by making a Twitter Dev (see Dependencies and Requirements). 
 
 * **Compiling:** ```mvn package``` or ```mvn clean package```

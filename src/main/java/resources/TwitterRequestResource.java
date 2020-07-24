@@ -1,5 +1,6 @@
 package resources;
 
+import configuration.Configuration;
 import model.ErrorMessage;
 import handlers.ExceptionHandler;
 import model.StatusList;
@@ -25,7 +26,8 @@ public class TwitterRequestResource {
 
     // CONSTRUCTORS
     public TwitterRequestResource() {
-        twitter = TwitterFactory.getSingleton();
+        Configuration c = new Configuration();
+        twitter = c.createTwitter();
         exceptionHandler = new ExceptionHandler();
     }
 
