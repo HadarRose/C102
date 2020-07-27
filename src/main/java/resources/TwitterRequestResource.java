@@ -1,48 +1,46 @@
 package resources;
+// TODO: clean up, JavaDoc
 
 import configuration.ApplicationConfiguration;
-import handlers.ExceptionHandler;
-import model.StatusList;
 import model.Message;
 
-import services.twitter4j.TwitterResourceServices;
+import services.twitter4j.TwitterResourceService;
 import twitter4j.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class TwitterRequestResource {
     private static Logger logger = LoggerFactory.getLogger(TwitterRequestResource.class);
-
+    private TwitterResourceService twitterResourceService;
     public final String VERSION = "1.0";
     private Twitter twitter;
-    private ExceptionHandler exceptionHandler;
+    //private TwitterExceptionHandlerServices exceptionHandler;
 
     /** Constructor, sets up twitter using default configuration settings and exceptionHandler to a new ExceptionHandler
      * */
     public TwitterRequestResource() throws IOException {
         ApplicationConfiguration c = new ApplicationConfiguration();
         twitter = c.createTwitter();
-        exceptionHandler = new ExceptionHandler();
+        twitterResourceService = new TwitterResourceService();
         logger.debug("TwitterRequestResource created with empty constructor");
     }
 
     /** Constructor
      * @param twitter Twitter to be set at the new twitter property
-     * @param exceptionHandler ExceptionHandler to be set as the new exceptionHandler property
      * */
-    public TwitterRequestResource(Twitter twitter, ExceptionHandler exceptionHandler) {
+    public TwitterRequestResource(Twitter twitter, TwitterResourceService twitterResourceService) {
         this.twitter = twitter;
-        this.exceptionHandler = exceptionHandler;
-        logger.debug("TwitterRequestResource created with twitter = {} and exceptionHandler = {}", twitter.toString(), exceptionHandler.toString());
+        this.twitterResourceService = twitterResourceService;
+        logger.debug("TwitterRequestResource created with twitter = {}", twitter.toString());
     }
 
     /** @return Twitter. The object's twitter property.
@@ -51,13 +49,7 @@ public class TwitterRequestResource {
         logger.debug("getTwitter() was called to return {}", this.twitter.toString());
         return this.twitter;
     }
-
-    /** @return ExceptionHandler. The object's exceptionHandler property.
-     * */
-    public ExceptionHandler getExceptionHandler(){
-        logger.debug("getExceptionHandler() was called to return {}", this.exceptionHandler.toString());
-        return this.exceptionHandler;
-    }
+    // TODO: getter for twitterresourceservices?
 
     /** API call on /timeline
      * @return Response. Contains list of statuses if successful, or error message if not.
@@ -66,8 +58,7 @@ public class TwitterRequestResource {
     @Path("/timeline")
     public Response getTimeline() {
         logger.info("GET request at /api/" + VERSION + "/twitter/timeline was triggered");
-        TwitterResourceServices trs = new TwitterResourceServices(); // TODO this should be in constructor i believe
-        return trs.getTimeline(this.twitter, this.exceptionHandler);
+        return twitterResourceService.getTimeline(this.twitter);
     }
 
     /** API call on /tweet
@@ -78,7 +69,6 @@ public class TwitterRequestResource {
     @Path("/tweet")
     public Response postTweet(Message post) {
         logger.info("POST request at /api/" + VERSION + "/twitter/tweet was triggered");
-        TwitterResourceServices trs = new TwitterResourceServices(); // TODO this should be in constructor i believe
-        return trs.postTweet(post, this.twitter, this.exceptionHandler);
+        return twitterResourceService.postTweet(this.twitter, post);
     }
 }

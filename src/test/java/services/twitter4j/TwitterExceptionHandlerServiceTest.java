@@ -1,4 +1,4 @@
-package handlers;
+package services.twitter4j;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +9,8 @@ import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
-public class ExceptionHandlerTest {
+// TODO: move all tests and maybe redo them
+public class TwitterExceptionHandlerServiceTest {
     private TwitterException mockedException;
 
     @Before
@@ -21,7 +21,7 @@ public class ExceptionHandlerTest {
     // test generic error
     @Test
     public void generalError() {
-        ExceptionHandler eh = spy(new ExceptionHandler());
+        TwitterExceptionHandlerService eh = spy(new TwitterExceptionHandlerService());
         Response response = eh.ResponseBuilder(new Exception());
         assertEquals(500, response.getStatus());
         ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
@@ -32,7 +32,7 @@ public class ExceptionHandlerTest {
     // test nullpointerexception
     @Test
     public void nullPointerError() {
-        ExceptionHandler eh = new ExceptionHandler();
+        TwitterExceptionHandlerService eh = new TwitterExceptionHandlerService();
         Response response = eh.ResponseBuilder(new NullPointerException());
         assertEquals(500, response.getStatus());
         ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
@@ -44,7 +44,7 @@ public class ExceptionHandlerTest {
     public void generalTwitterError() {
         when(mockedException.getStatusCode()).thenReturn(500);
 
-        ExceptionHandler eh = spy(new ExceptionHandler());
+        TwitterExceptionHandlerService eh = spy(new TwitterExceptionHandlerService());
         Response response = eh.ResponseBuilder(mockedException);
         assertEquals(500, response.getStatus());
         ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
@@ -59,7 +59,7 @@ public class ExceptionHandlerTest {
         when(mockedException.getErrorCode()).thenReturn(1);
         when(mockedException.getErrorMessage()).thenReturn("error message");
 
-        ExceptionHandler eh = spy(new ExceptionHandler());
+        TwitterExceptionHandlerService eh = spy(new TwitterExceptionHandlerService());
         Response response = eh.ResponseBuilder(mockedException);
         assertEquals(403, response.getStatus());
         ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
@@ -74,7 +74,7 @@ public class ExceptionHandlerTest {
         when(mockedException.getErrorCode()).thenReturn(170);
         when(mockedException.getErrorMessage()).thenReturn("error message");
 
-        ExceptionHandler eh = spy(new ExceptionHandler());
+        TwitterExceptionHandlerService eh = spy(new TwitterExceptionHandlerService());
         Response response = eh.ResponseBuilder(mockedException);
         assertEquals(403, response.getStatus());
         ErrorMessage errorMessage = (ErrorMessage) response.getEntity();

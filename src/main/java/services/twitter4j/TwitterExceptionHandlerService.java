@@ -1,4 +1,4 @@
-package handlers;
+package services.twitter4j;
 
 import model.ErrorMessage;
 import org.slf4j.Logger;
@@ -6,13 +6,15 @@ import org.slf4j.LoggerFactory;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.core.Response;
+// TODO: clean up, JavaDoc, logs
 
-public class ExceptionHandler {
+
+public class TwitterExceptionHandlerService {
     public static final String GENERAL_ERROR = "Something went wrong.";
     public static final String BODY_ERROR = "There was an issue reading the body of your request";
     public static final String NO_CONTENT_ERROR = "No tweet content specified.";
 
-    private static Logger logger = LoggerFactory.getLogger(ExceptionHandler.class);
+    private static Logger logger = LoggerFactory.getLogger(TwitterExceptionHandlerService.class);
 
     // TODO: (Q) is this actually a service?
     /**
@@ -55,7 +57,7 @@ public class ExceptionHandler {
             return new ErrorMessage(code, message);
         } else {
             logger.debug("Error recognized as non-forbidden TwitterException");
-            return new ErrorMessage(code, ExceptionHandler.GENERAL_ERROR);
+            return new ErrorMessage(code, TwitterExceptionHandlerService.GENERAL_ERROR);
         }
     }
 
@@ -65,6 +67,6 @@ public class ExceptionHandler {
      * @return ErrorMessage, status 500 and message is the general error message
      */
     public ErrorMessage GenericException(Exception e) {
-        return new ErrorMessage(500, ExceptionHandler.GENERAL_ERROR);
+        return new ErrorMessage(500, TwitterExceptionHandlerService.GENERAL_ERROR);
     }
 }

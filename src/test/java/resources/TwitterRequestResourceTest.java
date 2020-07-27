@@ -1,102 +1,53 @@
 package resources;
 
-import handlers.ExceptionHandler;
 import model.Message;
-import model.StatusList;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import services.twitter4j.TwitterResourceService;
 import twitter4j.*;
 
 import javax.ws.rs.core.Response;
 
-import java.io.IOException;
-
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.junit.Assert.*;
 
+
+// TODO: clean up, JavaDoc
+// TODO: pretty much redo all tests
+// idea for how to do this: when to return response with mocked twitter as entry
 public class TwitterRequestResourceTest {
     private Twitter mockedTwitter;
-    private ExceptionHandler mockedHandler;
+    private TwitterResourceService mockedResourceServices;
 
     @Before
     public void initialize() {
         mockedTwitter = mock(Twitter.class);
-        mockedHandler = mock(ExceptionHandler.class);
+        mockedResourceServices = mock(TwitterResourceService.class);
     }
 
-    /*TIMELINE TESTS*/
-    // tests that if twitter object doesn't throw an error, the response is OK and ResponseBuilder isn't called
     @Test
-    public void validTimeline() throws TwitterException {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
-        ResponseList<Status> mockedList = mock(ResponseList.class);
-        when(mockedTwitter.getHomeTimeline()).thenReturn(mockedList);
-        Response response = twitterRequestResource.getTimeline();
-        assertEquals(200, response.getStatus());
-        verify(mockedHandler, never()).ResponseBuilder(any(Exception.class));
-        StatusList statusList = (StatusList) response.getEntity();
-        assertEquals(mockedList, statusList.getStatusList());
+    public void timelineTest(){
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedResourceServices);
+        when(mockedResourceServices.getTimeline(any(Twitter.class))).thenAnswer(i ->{
+            return Response.ok(i.getArguments()[0]).build();
+        });
+        Response r = twitterRequestResource.getTimeline();
+        Twitter t = (Twitter) r.getEntity();
+        assertEquals(mockedTwitter, t);
     }
 
-    // tests that if twitter object throws an exception, responsebuilder is called
     @Test
-    public void invalidTimeline() throws TwitterException {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
-        when(mockedTwitter.getHomeTimeline()).thenThrow(Exception.class);
-        Response response = twitterRequestResource.getTimeline();
-        verify(mockedHandler, times(1)).ResponseBuilder(any(Exception.class));
-    }
-
-    /*TWEET TESTS*/
-    // tests that if twitter object doesn't throw an error, the response is OK and ResponseBuilder isn't called
-    @Test
-    public void validPost() throws TwitterException {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
-        Status mockedStatus = mock(Status.class);
-        when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenReturn(mockedStatus);
-        Response response = twitterRequestResource.postTweet(new Message("Hello!"));
-        assertEquals(200, response.getStatus());
-        verify(mockedHandler, never()).ResponseBuilder(any(Exception.class));
-        Status status = (Status) response.getEntity();
-        assertEquals(mockedStatus, status);
-    }
-
-    // tests that if twitter object throws an exception, responsebuilder is called
-    @Test
-    public void invalidPost() throws TwitterException {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
-        when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenThrow(Exception.class);
-        Response response = twitterRequestResource.postTweet(new Message("Hello!"));
-        verify(mockedHandler, times(1)).ResponseBuilder(any(Exception.class));
-    }
-
-    // tests that if message object throw an exception, response builder is called
-    @Test
-    public void invalidMessage() throws TwitterException {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
-        when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenThrow(Exception.class);
+    public void postTest(){
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedResourceServices);
+        when(mockedResourceServices.postTweet(any(Twitter.class), any(Message.class))).thenAnswer(i ->{
+            return Response.ok(i.getArguments()[1]).build();
+        });
         Message m = mock(Message.class);
-        when(m.getMessage()).thenThrow(Exception.class);
-        Response response = twitterRequestResource.postTweet(m);
-        verify(mockedHandler, times(1)).ResponseBuilder(any(Exception.class));
-    }
-
-    /*ADDITIONAL TESTS*/
-    // tests that getters return values correctly
-    @Test
-    public void testGetters() {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
-        assertEquals(mockedTwitter, twitterRequestResource.getTwitter());
-        assertEquals(mockedHandler, twitterRequestResource.getExceptionHandler());
-    }
-
-    // tests that empty constructor correctly initializes a twitter and an exceptionhandler
-    @Test
-    public void testEmptyConstructor() throws IOException {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource();
-        assertNotNull(twitterRequestResource.getTwitter());
-        assertNotNull(twitterRequestResource.getExceptionHandler());
-        assertTrue(twitterRequestResource.getTwitter() instanceof Twitter);
-        assertTrue(twitterRequestResource.getExceptionHandler() instanceof ExceptionHandler);
+        Response r = twitterRequestResource.postTweet(m);
+        Message m_ret = (Message) r.getEntity();
+        assertEquals(m, m_ret);
     }
 }
