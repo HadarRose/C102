@@ -14,6 +14,7 @@ public class ExceptionHandler {
 
     private static Logger logger = LoggerFactory.getLogger(ExceptionHandler.class);
 
+    // TODO: (Q) is this actually a service?
     /**
      * Handles all exceptions by finding their type and handling them accordingly.
      *

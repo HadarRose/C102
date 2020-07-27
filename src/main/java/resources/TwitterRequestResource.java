@@ -5,6 +5,7 @@ import handlers.ExceptionHandler;
 import model.StatusList;
 import model.Message;
 
+import services.twitter4j.TwitterResourceServices;
 import twitter4j.*;
 
 import javax.ws.rs.*;
@@ -65,15 +66,8 @@ public class TwitterRequestResource {
     @Path("/timeline")
     public Response getTimeline() {
         logger.info("GET request at /api/" + VERSION + "/twitter/timeline was triggered");
-        try {
-            List<Status> statusList = twitter.getHomeTimeline();
-            Response r  = Response.ok(new StatusList(statusList)).build();
-            logger.debug("getTimline() is returning response: {}", r.toString());
-            return r;
-        } catch (Exception e) {
-            logger.error("Exception was thrown: {}. Twitter corresponding to this event: {}.", e.getMessage(), this.twitter.toString(), e);
-            return exceptionHandler.ResponseBuilder(e);
-        }
+        TwitterResourceServices trs = new TwitterResourceServices(); // TODO this should be in constructor i believe
+        return trs.getTimeline(this.twitter, this.exceptionHandler);
     }
 
     /** API call on /tweet
@@ -84,22 +78,7 @@ public class TwitterRequestResource {
     @Path("/tweet")
     public Response postTweet(Message post) {
         logger.info("POST request at /api/" + VERSION + "/twitter/tweet was triggered");
-        try {
-            logger.debug("postTweet(message) read the message: {}", post.getMessage());
-            StatusUpdate statusUpdate = new StatusUpdate(post.getMessage());
-            Status status = twitter.updateStatus(statusUpdate);
-            Response r = Response.ok(status).build();
-            logger.debug("postTweet(message) is returning {}", r.toString());
-            return r;
-        } catch (Exception e) {
-            logger.debug("Twitter when exception thrown: {}", this.twitter.toString());
-            try{
-                logger.debug("The message found when the error was throw was: {}", post.getMessage());
-            }catch (Exception internalE){
-                logger.error("There was an issue retrieving the message.");
-            }
-            logger.error(e.getMessage(), e);
-            return exceptionHandler.ResponseBuilder(e);
-        }
+        TwitterResourceServices trs = new TwitterResourceServices(); // TODO this should be in constructor i believe
+        return trs.postTweet(post, this.twitter, this.exceptionHandler);
     }
 }
