@@ -9,6 +9,8 @@ import twitter4j.*;
 
 import javax.ws.rs.core.Response;
 
+import java.io.IOException;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -68,10 +70,21 @@ public class TwitterRequestResourceTest {
         verify(mockedHandler, times(1)).ResponseBuilder(any(Exception.class));
     }
 
+    // tests that if message object throw an exception, response builder is called
+    @Test
+    public void invalidMessage() throws TwitterException {
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
+        when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenThrow(Exception.class);
+        Message m = mock(Message.class);
+        when(m.getMessage()).thenThrow(Exception.class);
+        Response response = twitterRequestResource.postTweet(m);
+        verify(mockedHandler, times(1)).ResponseBuilder(any(Exception.class));
+    }
+
     /*ADDITIONAL TESTS*/
     // tests that getters return values correctly
     @Test
-    public void testGetters(){
+    public void testGetters() {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
         assertEquals(mockedTwitter, twitterRequestResource.getTwitter());
         assertEquals(mockedHandler, twitterRequestResource.getExceptionHandler());
@@ -79,7 +92,7 @@ public class TwitterRequestResourceTest {
 
     // tests that empty constructor correctly initializes a twitter and an exceptionhandler
     @Test
-    public void testEmptyConstructor(){
+    public void testEmptyConstructor() throws IOException {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource();
         assertNotNull(twitterRequestResource.getTwitter());
         assertNotNull(twitterRequestResource.getExceptionHandler());
