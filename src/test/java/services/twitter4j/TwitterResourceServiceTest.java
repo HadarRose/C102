@@ -79,23 +79,4 @@ public class TwitterResourceServiceTest {
         Response response = twitterResourceService.postTweet(mockedTwitter, m);
         verify(mockedHandlerService, times(1)).ResponseBuilder(any(Exception.class));
     }
-    // TODO: additional tests
-    /*ADDITIONAL TESTS*/
-    // tests that getters return values correctly
-    /*@Test
-    public void testGetters() {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedTwitter, mockedHandler);
-        assertEquals(mockedTwitter, twitterRequestResource.getTwitter());
-        assertEquals(mockedHandler, twitterRequestResource.getExceptionHandler());
-    }*/
-
-    // tests that empty constructor correctly initializes a twitter and an exceptionhandler
-    /*@Test
-    public void testEmptyConstructor() throws IOException {
-        TwitterRequestResource twitterRequestResource = new TwitterRequestResource();
-        assertNotNull(twitterRequestResource.getTwitter());
-        assertNotNull(twitterRequestResource.getExceptionHandler());
-        assertTrue(twitterRequestResource.getTwitter() instanceof Twitter);
-        assertTrue(twitterRequestResource.getExceptionHandler() instanceof TwitterExceptionHandlerServices);
-    }*/
 }

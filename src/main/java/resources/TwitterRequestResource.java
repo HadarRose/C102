@@ -1,9 +1,8 @@
 package resources;
-// TODO: clean up, JavaDoc
 
-import configuration.ApplicationConfiguration;
 import model.Message;
 
+import services.twitter4j.TwitterCreationService;
 import services.twitter4j.TwitterResourceService;
 import twitter4j.*;
 
@@ -23,37 +22,33 @@ public class TwitterRequestResource {
     private TwitterResourceService twitterResourceService;
     public final String VERSION = "1.0";
     private Twitter twitter;
-    //private TwitterExceptionHandlerServices exceptionHandler;
 
-    /** Constructor, sets up twitter using default configuration settings and exceptionHandler to a new ExceptionHandler
-     * */
+    /**
+     * Constructor, sets up twitter using default configuration settings and exceptionHandler to a new ExceptionHandler
+     */
     public TwitterRequestResource() throws IOException {
-        ApplicationConfiguration c = new ApplicationConfiguration();
-        twitter = c.createTwitter();
+        TwitterCreationService twitterCreationService = new TwitterCreationService();
+        twitter = twitterCreationService.createTwitter();
         twitterResourceService = new TwitterResourceService();
         logger.debug("TwitterRequestResource created with empty constructor");
     }
 
-    /** Constructor
+    /**
+     * Constructor
+     *
      * @param twitter Twitter to be set at the new twitter property
-     * */
+     */
     public TwitterRequestResource(Twitter twitter, TwitterResourceService twitterResourceService) {
         this.twitter = twitter;
         this.twitterResourceService = twitterResourceService;
         logger.debug("TwitterRequestResource created with twitter = {}", twitter.toString());
     }
 
-    /** @return Twitter. The object's twitter property.
-     * */
-    public Twitter getTwitter(){
-        logger.debug("getTwitter() was called to return {}", this.twitter.toString());
-        return this.twitter;
-    }
-    // TODO: getter for twitterresourceservices?
-
-    /** API call on /timeline
+    /**
+     * API call on /timeline
+     *
      * @return Response. Contains list of statuses if successful, or error message if not.
-     * */
+     */
     @GET
     @Path("/timeline")
     public Response getTimeline() {
@@ -61,10 +56,12 @@ public class TwitterRequestResource {
         return twitterResourceService.getTimeline(this.twitter);
     }
 
-    /** API call on /tweet
+    /**
+     * API call on /tweet
+     *
      * @param post Message. Contains the content of the tweet to be posted.
      * @return Response. Contains the posted tweet if successful, or error message if not.
-     * */
+     */
     @POST
     @Path("/tweet")
     public Response postTweet(Message post) {

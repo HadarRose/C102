@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-// TODO: move all tests and maybe redo them
+
 public class TwitterExceptionHandlerServiceTest {
     private TwitterException mockedException;
 

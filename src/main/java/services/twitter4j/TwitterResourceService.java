@@ -11,24 +11,36 @@ import twitter4j.Twitter;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-// TODO: clean up, JavaDoc, logs
-
 public class TwitterResourceService {
     private static Logger logger = LoggerFactory.getLogger(TwitterResourceService.class);
     private TwitterExceptionHandlerService handler;
 
-    public TwitterResourceService(){
+    /**
+     * Constructor
+     */
+    public TwitterResourceService() {
+        logger.info("TwitterResourceService created");
         handler = new TwitterExceptionHandlerService();
     }
 
-    public TwitterResourceService(TwitterExceptionHandlerService handler){
+    /**
+     * Constructor
+     *
+     * @param handler TwitterExceptionHandlerService to be the service's handler property
+     */
+    public TwitterResourceService(TwitterExceptionHandlerService handler) {
         this.handler = handler;
     }
 
-    public Response getTimeline(Twitter twitter){
+    /**
+     * @param twitter Twitter from which to retrieve timeline
+     * @return Response including timeline
+     */
+    public Response getTimeline(Twitter twitter) {
+        logger.info("TwitterResourceService called getTimeline");
         try {
             List<Status> statusList = twitter.getHomeTimeline();
-            Response r  = Response.ok(new StatusList(statusList)).build();
+            Response r = Response.ok(new StatusList(statusList)).build();
             logger.debug("getTimline() is returning response: {}", r.toString());
             return r;
         } catch (Exception e) {
@@ -37,7 +49,13 @@ public class TwitterResourceService {
         }
     }
 
-    public Response postTweet(Twitter twitter, Message post){
+    /**
+     * @param twitter Twitter to which tweet will be posted
+     * @param post    Message containing content of tweet to be posted
+     * @return Response containing tweet posted
+     */
+    public Response postTweet(Twitter twitter, Message post) {
+        logger.info("TwitterResourceService called postTweet");
         try {
             logger.debug("postTweet(message) read the message: {}", post.getMessage());
             StatusUpdate statusUpdate = new StatusUpdate(post.getMessage());
@@ -47,15 +65,13 @@ public class TwitterResourceService {
             return r;
         } catch (Exception e) {
             logger.debug("Twitter when exception thrown: {}", twitter.toString());
-            try{
+            try {
                 logger.debug("The message found when the error was throw was: {}", post.getMessage());
-            }catch (Exception internalE){
+            } catch (Exception internalE) {
                 logger.error("There was an issue retrieving the message.");
             }
             logger.error(e.getMessage(), e);
             return handler.ResponseBuilder(e);
         }
-
     }
-
 }

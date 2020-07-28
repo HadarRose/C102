@@ -6,8 +6,6 @@ import org.slf4j.LoggerFactory;
 import twitter4j.TwitterException;
 
 import javax.ws.rs.core.Response;
-// TODO: clean up, JavaDoc, logs
-
 
 public class TwitterExceptionHandlerService {
     public static final String GENERAL_ERROR = "Something went wrong.";
@@ -16,7 +14,6 @@ public class TwitterExceptionHandlerService {
 
     private static Logger logger = LoggerFactory.getLogger(TwitterExceptionHandlerService.class);
 
-    // TODO: (Q) is this actually a service?
     /**
      * Handles all exceptions by finding their type and handling them accordingly.
      *
