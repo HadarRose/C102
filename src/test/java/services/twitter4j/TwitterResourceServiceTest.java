@@ -1,82 +1,44 @@
 package services.twitter4j;
 
 import model.Message;
-import model.StatusList;
 import org.junit.Before;
 import org.junit.Test;
 import twitter4j.*;
 
-import javax.ws.rs.core.Response;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 public class TwitterResourceServiceTest {
     private Twitter mockedTwitter;
-    private TwitterExceptionHandlerService mockedHandlerService;
 
     @Before
     public void initialize() {
         mockedTwitter = mock(Twitter.class);
-        mockedHandlerService = mock(TwitterExceptionHandlerService.class);
     }
 
     /*TIMELINE TESTS*/
-    // tests that if twitter object doesn't throw an error, the response is OK and ResponseBuilder isn't called
+    // tests that if Twitter returns a status list as expected, the service returns that list
     @Test
     public void validTimeline() throws TwitterException {
-        TwitterResourceService twitterResourceService = new TwitterResourceService(mockedHandlerService, mockedTwitter);
+        TwitterResourceService twitterResourceService = new TwitterResourceService(mockedTwitter);
         ResponseList<Status> mockedList = mock(ResponseList.class);
         when(mockedTwitter.getHomeTimeline()).thenReturn(mockedList);
-        Response response = twitterResourceService.getTimeline();
-        assertEquals(200, response.getStatus());
-        verify(mockedHandlerService, never()).ResponseBuilder(any(Exception.class));
-        StatusList statusList = (StatusList) response.getEntity();
-        assertEquals(mockedList, statusList.getStatusList());
-    }
-
-    // tests that if twitter object throws an exception, responsebuilder is called
-    @Test
-    public void invalidTimeline() throws TwitterException {
-        TwitterResourceService twitterResourceService = new TwitterResourceService(mockedHandlerService, mockedTwitter);
-        when(mockedTwitter.getHomeTimeline()).thenThrow(Exception.class);
-        Response response = twitterResourceService.getTimeline();
-        verify(mockedHandlerService, times(1)).ResponseBuilder(any(Exception.class));
+        List<Status> statusList = twitterResourceService.getTimeline();
+        assertEquals(mockedList, statusList);
     }
 
     /*TWEET TESTS*/
-    // tests that if twitter object doesn't throw an error, the response is OK and ResponseBuilder isn't called
+    // tests that if Twitter returns a status  as expected, the service returns that status
     @Test
     public void validPost() throws TwitterException {
-        TwitterResourceService twitterResourceService = new TwitterResourceService(mockedHandlerService, mockedTwitter);
+        TwitterResourceService twitterResourceService = new TwitterResourceService(mockedTwitter);
         Status mockedStatus = mock(Status.class);
         when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenReturn(mockedStatus);
-        Response response = twitterResourceService.postTweet(new Message("Hello!"));
-        assertEquals(200, response.getStatus());
-        verify(mockedHandlerService, never()).ResponseBuilder(any(Exception.class));
-        Status status = (Status) response.getEntity();
+        Status status = twitterResourceService.postTweet(new Message("Hello!"));
         assertEquals(mockedStatus, status);
-    }
-
-    // tests that if twitter object throws an exception, responsebuilder is called
-    @Test
-    public void invalidPost() throws TwitterException {
-        TwitterResourceService twitterResourceService = new TwitterResourceService(mockedHandlerService, mockedTwitter);
-        when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenThrow(Exception.class);
-        Response response = twitterResourceService.postTweet(new Message("Hello!"));
-        verify(mockedHandlerService, times(1)).ResponseBuilder(any(Exception.class));
-    }
-
-    // tests that if message object throw an exception, response builder is called
-    @Test
-    public void invalidMessage() throws TwitterException {
-        TwitterResourceService twitterResourceService = new TwitterResourceService(mockedHandlerService, mockedTwitter);
-        when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenThrow(Exception.class);
-        Message m = mock(Message.class);
-        when(m.getMessage()).thenThrow(Exception.class);
-        Response response = twitterResourceService.postTweet(m);
-        verify(mockedHandlerService, times(1)).ResponseBuilder(any(Exception.class));
     }
 }

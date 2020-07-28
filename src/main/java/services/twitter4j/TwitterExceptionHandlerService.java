@@ -5,21 +5,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.TwitterException;
 
-import javax.ws.rs.core.Response;
-
 public class TwitterExceptionHandlerService {
     public static final String GENERAL_ERROR = "Something went wrong.";
     public static final String BODY_ERROR = "There was an issue reading the body of your request";
-    public static final String NO_CONTENT_ERROR = "No tweet content specified.";
+    public static final String CONTENT_LENGTH_ERROR = "The tweet's length is invalid. The content of a tweet must be between 0 and 280 characters long.";
 
     private static Logger logger = LoggerFactory.getLogger(TwitterExceptionHandlerService.class);
 
     /**
      * Handles all exceptions by finding their type and handling them accordingly.
      *
-     * @return Response, response generated according to error
+     * @return ErrorMessage containing appropriate message and error code
      */
-    public Response ResponseBuilder(Exception e) {
+    public ErrorMessage ErrorMessageBuilder(Exception e) {
         ErrorMessage errorMessage;
         if (e instanceof TwitterException) {
             logger.debug("Error recognized as TwitterException");
@@ -31,9 +29,7 @@ public class TwitterExceptionHandlerService {
             logger.debug("Error is neither a TwitterException nor a NullPointerException");
             errorMessage = GenericException(e);
         }
-        Response r = Response.status(errorMessage.getStatusCode()).entity(errorMessage).build();
-        logger.debug("Returning error response : {}", r.toString());
-        return r;
+        return errorMessage;
     }
 
     /**
@@ -47,9 +43,9 @@ public class TwitterExceptionHandlerService {
         if (code == 403) { // forbidden error
             logger.debug("Error recognized as Forbidden (Status 403)");
             String message = e.getErrorMessage();
-            if (e.getErrorCode() == 170) { // if this is a empty status problem
-                logger.debug("Error recognized as empty tweet error");
-                message = this.NO_CONTENT_ERROR;
+            // if this is a empty status problem or a tweet too long error
+            if ((e.getErrorCode() == 170) || (e.getErrorCode() == 186)) {
+                message = this.CONTENT_LENGTH_ERROR;
             }
             return new ErrorMessage(code, message);
         } else {

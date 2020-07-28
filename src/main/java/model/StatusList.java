@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import twitter4j.Status;
 
 import java.util.List;
-
+// TODO: delete this after commit
 public class StatusList {
     private static Logger logger = LoggerFactory.getLogger(StatusList.class);
 

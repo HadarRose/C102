@@ -5,8 +5,6 @@ import org.junit.Test;
 import model.ErrorMessage;
 import twitter4j.TwitterException;
 
-import javax.ws.rs.core.Response;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -22,9 +20,8 @@ public class TwitterExceptionHandlerServiceTest {
     @Test
     public void generalError() {
         TwitterExceptionHandlerService eh = spy(new TwitterExceptionHandlerService());
-        Response response = eh.ResponseBuilder(new Exception());
-        assertEquals(500, response.getStatus());
-        ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
+        ErrorMessage errorMessage = eh.ErrorMessageBuilder(new Exception());
+        assertEquals(500, errorMessage.getStatusCode());
         assertEquals(eh.GENERAL_ERROR, errorMessage.getMessage());
         verify(eh).GenericException(any(NullPointerException.class));
     }
@@ -33,9 +30,8 @@ public class TwitterExceptionHandlerServiceTest {
     @Test
     public void nullPointerError() {
         TwitterExceptionHandlerService eh = new TwitterExceptionHandlerService();
-        Response response = eh.ResponseBuilder(new NullPointerException());
-        assertEquals(500, response.getStatus());
-        ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
+        ErrorMessage errorMessage = eh.ErrorMessageBuilder(new NullPointerException());
+        assertEquals(500, errorMessage.getStatusCode());
         assertEquals(eh.BODY_ERROR, errorMessage.getMessage());
     }
 
@@ -45,9 +41,8 @@ public class TwitterExceptionHandlerServiceTest {
         when(mockedException.getStatusCode()).thenReturn(500);
 
         TwitterExceptionHandlerService eh = spy(new TwitterExceptionHandlerService());
-        Response response = eh.ResponseBuilder(mockedException);
-        assertEquals(500, response.getStatus());
-        ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
+        ErrorMessage errorMessage = eh.ErrorMessageBuilder(mockedException);
+        assertEquals(500, errorMessage.getStatusCode());
         assertEquals(eh.GENERAL_ERROR, errorMessage.getMessage());
         verify(eh).TwitterException(any(TwitterException.class));
     }
@@ -60,9 +55,8 @@ public class TwitterExceptionHandlerServiceTest {
         when(mockedException.getErrorMessage()).thenReturn("error message");
 
         TwitterExceptionHandlerService eh = spy(new TwitterExceptionHandlerService());
-        Response response = eh.ResponseBuilder(mockedException);
-        assertEquals(403, response.getStatus());
-        ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
+        ErrorMessage errorMessage = eh.ErrorMessageBuilder(mockedException);
+        assertEquals(403, errorMessage.getStatusCode());
         assertEquals("error message", errorMessage.getMessage());
         verify(eh).TwitterException(any(TwitterException.class));
     }
@@ -75,10 +69,9 @@ public class TwitterExceptionHandlerServiceTest {
         when(mockedException.getErrorMessage()).thenReturn("error message");
 
         TwitterExceptionHandlerService eh = spy(new TwitterExceptionHandlerService());
-        Response response = eh.ResponseBuilder(mockedException);
-        assertEquals(403, response.getStatus());
-        ErrorMessage errorMessage = (ErrorMessage) response.getEntity();
-        assertEquals(eh.NO_CONTENT_ERROR, errorMessage.getMessage());
+        ErrorMessage errorMessage = eh.ErrorMessageBuilder(mockedException);
+        assertEquals(403, errorMessage.getStatusCode());
+        assertEquals(eh.CONTENT_LENGTH_ERROR, errorMessage.getMessage());
         verify(eh).TwitterException(any(TwitterException.class));
     }
 }
