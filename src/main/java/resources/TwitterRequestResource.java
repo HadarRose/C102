@@ -3,7 +3,7 @@ package resources;
 import model.ErrorMessage;
 import model.Message;
 
-import services.twitter4j.TwitterExceptionHandlerService;
+import services.twitter4j.TwitterResourceException;
 import services.twitter4j.TwitterResourceService;
 
 import javax.ws.rs.*;
@@ -21,7 +21,6 @@ import twitter4j.Status;
 public class TwitterRequestResource {
     private static Logger logger = LoggerFactory.getLogger(TwitterRequestResource.class);
     private TwitterResourceService twitterResourceService;
-    private TwitterExceptionHandlerService handlerService;
     public final String VERSION = "1.0";
 
     /**
@@ -29,7 +28,6 @@ public class TwitterRequestResource {
      */
     public TwitterRequestResource() throws IOException {
         twitterResourceService = new TwitterResourceService();
-        handlerService = new TwitterExceptionHandlerService();
         logger.debug("TwitterRequestResource created with empty constructor");
     }
 
@@ -38,9 +36,8 @@ public class TwitterRequestResource {
      *
      * @param twitterResourceService TwitterResourceService value for twitterResourceService property
      */
-    public TwitterRequestResource(TwitterResourceService twitterResourceService, TwitterExceptionHandlerService handlerService) {
+    public TwitterRequestResource(TwitterResourceService twitterResourceService) {
         this.twitterResourceService = twitterResourceService;
-        this.handlerService = handlerService;
     }
 
     /**
@@ -55,9 +52,9 @@ public class TwitterRequestResource {
         try{
             List<Status> statusList = twitterResourceService.getTimeline();
             return Response.ok(statusList).build();
-        } catch (Exception e){
-            ErrorMessage errorMessage = handlerService.ErrorMessageBuilder(e);
-            return Response.status(errorMessage.getStatusCode()).entity(errorMessage).build();
+        } catch (TwitterResourceException e){
+            ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
+            return Response.status(e.getStatusCode()).entity(errorMessage).build();
         }
     }
 
@@ -74,9 +71,9 @@ public class TwitterRequestResource {
         try{
             Status status = twitterResourceService.postTweet(post);
             return Response.ok(status).build();
-        } catch (Exception e){
-            ErrorMessage errorMessage = handlerService.ErrorMessageBuilder(e);
-            return Response.status(errorMessage.getStatusCode()).entity(errorMessage).build();
+        } catch (TwitterResourceException e){
+            ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
+            return Response.status(e.getStatusCode()).entity(errorMessage).build();
         }
     }
 }

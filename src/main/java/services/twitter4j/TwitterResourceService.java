@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,6 +16,8 @@ public class TwitterResourceService {
 
     /**
      * Constructor
+     *
+     * @throws IOException
      */
     public TwitterResourceService() throws IOException {
         logger.info("TwitterResourceService created");
@@ -35,19 +36,29 @@ public class TwitterResourceService {
 
     /**
      * @return List<Status> containing Status representation for tweets from the timeline
+     * @throws TwitterResourceException
      */
-    public List<Status> getTimeline() throws TwitterException {
+    public List<Status> getTimeline() throws TwitterResourceException {
         logger.info("TwitterResourceService called getTimeline");
-        return twitter.getHomeTimeline();
+        try {
+            return twitter.getHomeTimeline();
+        } catch (Exception e) {
+            throw new TwitterResourceException(e);
+        }
     }
 
     /**
      * @param post Message containing content of tweet to be posted
      * @return Status containing information regarding the uploaded message
+     * @throws TwitterResourceException
      */
-    public Status postTweet(Message post) throws TwitterException {
+    public Status postTweet(Message post) throws TwitterResourceException {
         logger.info("TwitterResourceService called postTweet");
-        StatusUpdate statusUpdate = new StatusUpdate(post.getMessage());
-        return twitter.updateStatus(statusUpdate);
+        try {
+            StatusUpdate statusUpdate = new StatusUpdate(post.getMessage());
+            return twitter.updateStatus(statusUpdate);
+        } catch (Exception e) {
+            throw new TwitterResourceException(e);
+        }
     }
 }

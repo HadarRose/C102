@@ -22,7 +22,7 @@ public class TwitterCreationService {
     public TwitterCreationService() throws IOException {
         logger.info("TwitterCreationService created");
         configurationService = new ConfigurationService();
-        applicationConfiguration = configurationService.getKeys();
+        applicationConfiguration = configurationService.getKeys(); // todo this aint contained to services.twitter4j
     }
 
     /**
