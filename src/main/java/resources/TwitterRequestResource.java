@@ -3,7 +3,7 @@ package resources;
 import model.ErrorMessage;
 import model.Message;
 
-import model.TwitterKeys;
+import configuration.TwitterKeys;
 import services.twitter4j.TwitterResourceException;
 import services.twitter4j.TwitterResourceService;
 

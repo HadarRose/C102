@@ -2,7 +2,6 @@ package configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
-import model.TwitterKeys;
 
 public class ApplicationConfiguration extends Configuration {
     private TwitterKeys twitterKeys;
