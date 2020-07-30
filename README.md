@@ -12,7 +12,7 @@ of the example file to your new configuration.yml file, and replace the XXX plac
 You will also need to generate these credentials by making a Twitter Dev (see Dependencies and Requirements). 
 
 * **Compiling:** ```mvn package``` or ```mvn clean package```
-* **Starting the server:** ```java -jar target/C102.jar server```
+* **Starting the server:** ```java -jar target/C102.jar server config.yml```
 * **Endpoints:**
     * Posting a tweet: http://localhost:8080/api/1.0/tweet 
         * Request body: needs to be a JSON of the form {"message": "your message goes here"}

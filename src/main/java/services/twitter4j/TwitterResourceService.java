@@ -1,13 +1,13 @@
 package services.twitter4j;
 
 import model.Message;
+import model.TwitterKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 
-import java.io.IOException;
 import java.util.List;
 
 public class TwitterResourceService {
@@ -17,11 +17,11 @@ public class TwitterResourceService {
     /**
      * Constructor
      *
-     * @throws IOException
+     * @param twitterKeys TwitterKeys containing keys for new twitter object
      */
-    public TwitterResourceService() throws IOException {
+    public TwitterResourceService(TwitterKeys twitterKeys) {
         logger.info("TwitterResourceService created");
-        TwitterCreationService twitterCreationService = new TwitterCreationService();
+        TwitterCreationService twitterCreationService = new TwitterCreationService(twitterKeys);
         twitter = twitterCreationService.createTwitter();
     }
 

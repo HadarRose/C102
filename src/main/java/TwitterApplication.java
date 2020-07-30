@@ -4,8 +4,6 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import resources.TwitterRequestResource;
 
-import java.io.IOException;
-
 public class TwitterApplication extends Application<ApplicationConfiguration> {
     public static void main(String[] args) throws Exception {
         new TwitterApplication().run(args);
@@ -17,8 +15,8 @@ public class TwitterApplication extends Application<ApplicationConfiguration> {
     }
 
     @Override
-    public void run(ApplicationConfiguration config, Environment environment) throws IOException {
-        final TwitterRequestResource resource = new TwitterRequestResource();
+    public void run(ApplicationConfiguration config, Environment environment) {
+        final TwitterRequestResource resource = new TwitterRequestResource(config.getTwitterKeys());
         environment.jersey().register(resource);
     }
 }

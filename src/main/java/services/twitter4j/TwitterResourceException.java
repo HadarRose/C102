@@ -13,7 +13,7 @@ public class TwitterResourceException extends Exception {
     /**
      * Message for invalid content length
      */
-    public static final String CONTENT_LENGTH_ERROR = "The tweet's length is invalid. The content of a tweet must be between 0 and 280 characters long.";
+    public static final String CONTENT_LENGTH_ERROR = "The tweet's length is invalid. The content of a tweet must be between 1 and 280 characters long.";
     /**
      * Message for general error
      */
@@ -48,6 +48,10 @@ public class TwitterResourceException extends Exception {
                 // if this is a empty status problem or a tweet too long error
                 if ((twitterException.getErrorCode() == 170) || (twitterException.getErrorCode() == 186)) {
                     this.message = this.CONTENT_LENGTH_ERROR;
+                    logger.info("TwitterResourceException thrown with a length error. The user has recieved the following message: {}", this.message);
+
+                } else {
+                    logger.error("TwitterResourceException thrown. It contained the exception: ", exception);
                 }
             }
         } else {
@@ -57,8 +61,8 @@ public class TwitterResourceException extends Exception {
                 this.message = this.GENERAL_ERROR;
             }
             this.statusCode = GENERAL_ERROR_CODE; // sets status code to default value
+            logger.error("TwitterResourceException thrown. It contained the exception: ", exception);
         }
-        logger.error("TwitterResourceException thrown. It contained the exception: ", exception);
     }
 
     /**

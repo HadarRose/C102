@@ -1,28 +1,25 @@
 package services.twitter4j;
 
-import configuration.ApplicationConfiguration;
+import model.TwitterKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import services.ConfigurationService;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.io.IOException;
-
 public class TwitterCreationService {
     private static Logger logger = LoggerFactory.getLogger(TwitterCreationService.class);
 
-    private ApplicationConfiguration applicationConfiguration;
-    private ConfigurationService configurationService;
+    private TwitterKeys twitterKeys;
 
     /**
-     * Constructor. Creates a new ConfigurationService and uses its getKeys() to generate ApplicationConfiguration
+     * Constructor
+     *
+     * @param twitterKeys TwitterKeys containing keys for new twitter object
      */
-    public TwitterCreationService() throws IOException {
+    public TwitterCreationService(TwitterKeys twitterKeys) {
+        this.twitterKeys = twitterKeys;
         logger.info("TwitterCreationService created");
-        configurationService = new ConfigurationService();
-        applicationConfiguration = configurationService.getKeys(); // todo this aint contained to services.twitter4j
     }
 
     /**
@@ -32,10 +29,10 @@ public class TwitterCreationService {
         logger.info("TwitterCreationService called createConfigBuilder");
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true)
-                .setOAuthConsumerKey(applicationConfiguration.getOauthconsumerkey())
-                .setOAuthConsumerSecret(applicationConfiguration.getOauthconsumersecret())
-                .setOAuthAccessToken(applicationConfiguration.getOauthaccesstoken())
-                .setOAuthAccessTokenSecret(applicationConfiguration.getOauthaccesstokensecret());
+                .setOAuthConsumerKey(twitterKeys.getOauthconsumerkey())
+                .setOAuthConsumerSecret(twitterKeys.getOauthconsumersecret())
+                .setOAuthAccessToken(twitterKeys.getOauthaccesstoken())
+                .setOAuthAccessTokenSecret(twitterKeys.getOauthaccesstokensecret());
         return cb;
     }
 
