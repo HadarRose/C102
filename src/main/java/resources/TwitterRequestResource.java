@@ -4,6 +4,7 @@ import model.ErrorMessage;
 import model.Message;
 
 import configuration.TwitterKeys;
+import model.Tweet;
 import services.twitter4j.TwitterResourceException;
 import services.twitter4j.TwitterResourceService;
 
@@ -14,7 +15,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import twitter4j.Status;
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
@@ -52,8 +52,8 @@ public class TwitterRequestResource {
     public Response getTimeline() {
         logger.info("GET request at /api/" + VERSION + "/twitter/timeline was triggered");
         try {
-            List<Status> statusList = twitterResourceService.getTimeline();
-            return Response.ok(statusList).build();
+            List<Tweet> tweetList = twitterResourceService.getTimeline();
+            return Response.ok(tweetList).build();
         } catch (TwitterResourceException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
             return Response.status(e.getStatusCode()).entity(errorMessage).build();
@@ -71,8 +71,8 @@ public class TwitterRequestResource {
     public Response postTweet(Message post) {
         logger.info("POST request at /api/" + VERSION + "/twitter/tweet was triggered");
         try {
-            Status status = twitterResourceService.postTweet(post);
-            return Response.ok(status).build();
+            Tweet tweet = twitterResourceService.postTweet(post);
+            return Response.ok(tweet).build();
         } catch (TwitterResourceException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
             return Response.status(e.getStatusCode()).entity(errorMessage).build();
