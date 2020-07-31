@@ -20,6 +20,39 @@ public class Tweet {
         this.user = user;
     }
 
+    @Override
+    public String toString(){
+        return "message: " + message + "\ncreatedAt" + createdAt.toString() + "\nuser: " + user.toString();
+    }
+
+    @Override
+    public int hashCode(){
+        int result = 17;
+
+        result = 31 * result + message.hashCode();
+        result = 31 * result + createdAt.hashCode();
+        result = 31 * result + user.hashCode();
+
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o == this){
+            return true;
+        }
+        if(!(o instanceof Tweet)){
+            return false;
+        }
+
+        Tweet tweet = (Tweet) o;
+        if(this.user.equals(tweet.user) && this.createdAt.equals(tweet.createdAt) && this.message.equals(tweet.message)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * @return String message
      */

@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import twitter4j.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,21 +16,6 @@ import static org.mockito.Mockito.*;
 
 public class TwitterResourceServiceTest {
     private Twitter mockedTwitter;
-
-    /* note to self about how I did this: extended a class that already implements most of the methods that are needed
-     * for ResponseList<T>*/
-    public class ResponseListStatus<T> extends ArrayList<T> implements ResponseList<T> {
-
-        @Override
-        public RateLimitStatus getRateLimitStatus() {
-            return null;
-        }
-
-        @Override
-        public int getAccessLevel() {
-            return 0;
-        }
-    }
 
     @Before
     public void initialize() {
@@ -46,7 +30,7 @@ public class TwitterResourceServiceTest {
         TwitterResourceService twitterResourceService = spy(new TwitterResourceService(mockedTwitter));
         Tweet mockedTweet = mock(Tweet.class);
         Status mockedStatus = mock(Status.class);
-        ResponseListStatus<Status> listStatus = new ResponseListStatus<>();
+        ResponseListStatusTestClass<Status> listStatus = new ResponseListStatusTestClass<>();
         listStatus.add(mockedStatus);
         listStatus.add(mockedStatus);
         when(mockedTwitter.getHomeTimeline()).thenReturn(listStatus);
