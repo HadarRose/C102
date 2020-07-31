@@ -1,8 +1,10 @@
-import configuration.ApplicationConfiguration;
+package bootcamp;
+
+import bootcamp.configuration.ApplicationConfiguration;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import resources.TwitterRequestResource;
+import bootcamp.resources.TwitterRequestResource;
 
 public class TwitterApplication extends Application<ApplicationConfiguration> {
     public static void main(String[] args) throws Exception {

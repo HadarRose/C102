@@ -1,4 +1,4 @@
-package configuration;
+package bootcamp.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,8 +1,8 @@
-package services.twitter4j;
+package bootcamp.services.twitter4j;
 
-import model.Message;
-import model.Tweet;
-import model.User;
+import bootcamp.model.Message;
+import bootcamp.model.Tweet;
+import bootcamp.model.User;
 import org.junit.Before;
 import org.junit.Test;
 import twitter4j.*;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 

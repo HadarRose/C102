@@ -1,9 +1,9 @@
-package services.twitter4j;
+package bootcamp.services.twitter4j;
 
-import model.Message;
-import configuration.TwitterKeys;
-import model.Tweet;
-import model.User;
+import bootcamp.model.Message;
+import bootcamp.configuration.TwitterKeys;
+import bootcamp.model.Tweet;
+import bootcamp.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.Status;
@@ -57,7 +57,7 @@ public class TwitterResourceService {
     /**
      * Creates Twitter object using a Configuration's key properties.
      *
-     * @param twitterKeys twitter keys that will be used by createConfigBuilder to create a configuration
+     * @param twitterKeys twitter keys that will be used by createConfigBuilder to create a bootcamp.configuration
      * @return Twitter with loaded credentials
      */
     public Twitter createTwitter(TwitterKeys twitterKeys) {

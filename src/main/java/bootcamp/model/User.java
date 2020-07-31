@@ -1,4 +1,4 @@
-package model;
+package bootcamp.model;
 
 public class User {
     private String twitterHandle;
