@@ -2,6 +2,7 @@ package resources;
 
 import model.ErrorMessage;
 import model.Message;
+import model.Tweet;
 import org.junit.Before;
 import org.junit.Test;
 import services.twitter4j.TwitterResourceException;
@@ -27,7 +28,7 @@ public class TwitterRequestResourceTest {
     @Test
     public void validTimeline() throws TwitterResourceException {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
-        List<Status> mockedList = mock(List.class);
+        List<Tweet> mockedList = mock(List.class);
         when(mockedResourceServices.getTimeline()).thenReturn(mockedList);
 
         Response r = twitterRequestResource.getTimeline();
@@ -55,15 +56,15 @@ public class TwitterRequestResourceTest {
     @Test
     public void validPost() throws TwitterResourceException {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
-        Status mockedStatus = mock(Status.class);
+        Tweet mockedTweet = mock(Tweet.class);
         Message mockedMessage = mock(Message.class);
-        when(mockedResourceServices.postTweet(any(Message.class))).thenReturn(mockedStatus);
+        when(mockedResourceServices.postTweet(any(Message.class))).thenReturn(mockedTweet);
 
         Response r = twitterRequestResource.postTweet(mockedMessage);
-        Status status = (Status) r.getEntity();
+        Tweet tweet = (Tweet) r.getEntity();
         verify(mockedResourceServices, times(1)).postTweet(any(Message.class));
         assertEquals(200, r.getStatus());
-        assertEquals(mockedStatus, status);
+        assertEquals(mockedTweet, tweet);
     }
 
     @Test
