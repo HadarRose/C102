@@ -14,6 +14,8 @@ import twitter4j.conf.ConfigurationBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TwitterResourceService {
     private static Logger logger = LoggerFactory.getLogger(TwitterResourceService.class);
@@ -108,6 +110,25 @@ public class TwitterResourceService {
             StatusUpdate statusUpdate = new StatusUpdate(post.getMessage());
             Status status = twitter.updateStatus(statusUpdate);
             return this.statusToTweet(status);
+        } catch (Exception e) {
+            throw new TwitterResourceException(e);
+        }
+    }
+
+    /**
+     * @param keyword word by which the timeline will be filtered
+     * @return List<Tweet> list of Tweet objects from the user's timeline, filtered by keyword
+     * @throws TwitterResourceException
+     */
+    public List<Tweet> getTimelineFiltered(Optional<String> keyword) throws TwitterResourceException {
+        logger.info("TwitterResourceService called getTimelineFiltered with keyword: {}", keyword);
+        try {
+            List<Status> statuses = twitter.getHomeTimeline();
+            List<Tweet> tweets = statuses.stream()
+                    .filter(status -> status.getText().toLowerCase().contains(keyword.get().toLowerCase())) // this will throw NoSuchElementException if keyword is null
+                    .map(status -> this.statusToTweet(status))
+                    .collect(Collectors.toList());
+            return tweets;
         } catch (Exception e) {
             throw new TwitterResourceException(e);
         }

@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
@@ -54,6 +55,24 @@ public class TwitterRequestResource {
         logger.info("GET request at /api/" + VERSION + "/twitter/timeline was triggered");
         try {
             List<Tweet> tweetList = twitterResourceService.getTimeline();
+            return Response.ok(tweetList).build();
+        } catch (TwitterResourceException e) {
+            ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
+            return Response.status(e.getStatusCode()).entity(errorMessage).build();
+        }
+    }
+
+    /**
+     * API call to /timeline/filter?keyword={keyword}
+     *
+     * @return Response. Contains list of filtered tweets if successful, or error message if not.
+     */
+    @GET
+    @Path("/timeline/filter")
+    public Response getTimelineFiltered(@QueryParam("keyword") Optional<String> keyword) {
+        logger.info("GET request at /api/" + VERSION + "/twitter/timeline/filter?keyword=" + keyword + " was triggered");
+        try {
+            List<Tweet> tweetList = twitterResourceService.getTimelineFiltered(keyword);
             return Response.ok(tweetList).build();
         } catch (TwitterResourceException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());

@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.TwitterException;
 
+import java.util.NoSuchElementException;
+
 public class TwitterResourceException extends Exception {
     private static Logger logger = LoggerFactory.getLogger(TwitterResourceException.class);
     /**
@@ -22,6 +24,10 @@ public class TwitterResourceException extends Exception {
      * Message for errors relating to issues with message bodies
      */
     public static final String BODY_ERROR = "There was an issue reading the body of your request";
+    /**
+     * Message for errors relating to missing optionals
+     */
+    public static final String MISSING_OPTIONAL = "Could not find all required parameters.";
 
 
     /**
@@ -54,6 +60,11 @@ public class TwitterResourceException extends Exception {
                     logger.error("TwitterResourceException thrown. It contained the exception: ", exception);
                 }
             }
+        } else if (exception instanceof NoSuchElementException) {
+            this.message = this.MISSING_OPTIONAL;
+            this.statusCode = this.GENERAL_ERROR_CODE;
+            logger.info("TwitterResourceException thrown with a NoSuchElementException.");
+
         } else {
             if (exception instanceof NullPointerException) {
                 this.message = this.BODY_ERROR;

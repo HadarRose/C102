@@ -9,8 +9,10 @@ import twitter4j.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -45,6 +47,48 @@ public class TwitterResourceServiceTest {
         TwitterResourceService twitterResourceService = new TwitterResourceService(mockedTwitter);
         when(mockedTwitter.getHomeTimeline()).thenThrow(TwitterException.class);
         List<Tweet> tweetList = twitterResourceService.getTimeline();
+    }
+
+    // tests that getTimelineFiltered correctly returns only filtered Statuses (which are converted to Tweets)
+    @Test
+    public void filteredTimelineTest() throws TwitterException, TwitterResourceException {
+        TwitterResourceService twitterResourceService = spy(new TwitterResourceService(mockedTwitter));
+        Optional<String> keyword = Optional.of("hello");
+        Status mockedStatus1 = mock(Status.class);
+        Status mockedStatus2 = mock(Status.class);
+        Tweet mockedTweet = mock(Tweet.class);
+        ResponseListStatusTestClass<Status> listStatus = new ResponseListStatusTestClass<>();
+        listStatus.add(mockedStatus1);
+        listStatus.add(mockedStatus2);
+
+        when(mockedStatus1.getText()).thenReturn("Hello there");
+        when(mockedStatus2.getText()).thenReturn("goodbye");
+        when(mockedTwitter.getHomeTimeline()).thenReturn(listStatus);
+        doReturn(mockedTweet).when(twitterResourceService).statusToTweet(mockedStatus1);
+
+        List<Tweet> tweets = twitterResourceService.getTimelineFiltered(keyword);
+
+        // assert that statusToTweet was called for the first mockedStatus but not the other
+        verify(twitterResourceService, times(1)).statusToTweet(mockedStatus1);
+        verify(twitterResourceService, never()).statusToTweet(mockedStatus2);
+
+        // assert that the list only has one element, which is the mockedtweet
+        assertEquals(1, tweets.size());
+        assertTrue(tweets.contains(mockedTweet));
+    }
+
+    // tests that having a null optional throws a TwitterResourceException
+    @Test(expected = TwitterResourceException.class)
+    public void filteredTimelineOptionalException() throws TwitterException, TwitterResourceException {
+        TwitterResourceService twitterResourceService = spy(new TwitterResourceService(mockedTwitter));
+        Status mockedStatus = mock(Status.class);
+        ResponseListStatusTestClass<Status> listStatus = new ResponseListStatusTestClass<>();
+        listStatus.add(mockedStatus);
+
+        when(mockedStatus.getText()).thenReturn("hello there");
+        when(mockedTwitter.getHomeTimeline()).thenReturn(listStatus);
+
+        List<Tweet> tweets = twitterResourceService.getTimelineFiltered(null);
     }
 
     /*TWEET TESTS*/

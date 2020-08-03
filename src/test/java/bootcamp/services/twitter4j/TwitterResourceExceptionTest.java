@@ -3,6 +3,8 @@ package bootcamp.services.twitter4j;
 import org.junit.Test;
 import twitter4j.TwitterException;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -56,6 +58,15 @@ public class TwitterResourceExceptionTest {
 
         TwitterResourceException twitterResourceException = new TwitterResourceException(exception);
         assertEquals(twitterResourceException.GENERAL_ERROR, twitterResourceException.getMessage());
+        assertEquals(twitterResourceException.GENERAL_ERROR_CODE, twitterResourceException.getStatusCode());
+    }
+
+    @Test
+    public void noSuchElementException() {
+        NoSuchElementException elementException = mock(NoSuchElementException.class);
+
+        TwitterResourceException twitterResourceException = new TwitterResourceException(elementException);
+        assertEquals(twitterResourceException.MISSING_OPTIONAL, twitterResourceException.getMessage());
         assertEquals(twitterResourceException.GENERAL_ERROR_CODE, twitterResourceException.getStatusCode());
     }
 }
