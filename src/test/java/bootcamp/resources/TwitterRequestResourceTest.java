@@ -12,7 +12,8 @@ import twitter4j.Status;
 import javax.ws.rs.core.Response;
 
 import java.util.List;
-
+import java.util.Optional;
+// todo test for new method
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
@@ -34,7 +35,7 @@ public class TwitterRequestResourceTest {
         Response r = twitterRequestResource.getTimeline();
         verify(mockedResourceServices, times(1)).getTimeline();
         assertEquals(200, r.getStatus());
-        List<Status> statusList = (List<Status>) r.getEntity();
+        List<Tweet> statusList = (List<Tweet>) r.getEntity();
         assertEquals(mockedList, statusList);
     }
 
@@ -80,6 +81,34 @@ public class TwitterRequestResourceTest {
         ErrorMessage errorMessage = (ErrorMessage) r.getEntity();
         verify(mockedResourceServices, times(1)).postTweet(any(Message.class));
         assertEquals(500, r.getStatus());
+        assertEquals("This is an error", errorMessage.getMessage());
+    }
+
+    @Test
+    public void validTimelineFilter() throws TwitterResourceException{
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
+        List<Tweet> mockedList = mock(List.class);
+        when(mockedResourceServices.getTimelineFiltered(any(Optional.class))).thenReturn(mockedList);
+
+        Response r = twitterRequestResource.getTimelineFiltered(null);
+        verify(mockedResourceServices, times(1)).getTimelineFiltered(any(Optional.class));
+        assertEquals(200, r.getStatus());
+        List<Tweet> statusList = (List<Tweet>) r.getEntity();
+        assertEquals(mockedList, statusList);
+    }
+
+    @Test
+    public void invalidTimelineFilter() throws TwitterResourceException {
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
+        TwitterResourceException mockedException = mock(TwitterResourceException.class);
+        when(mockedResourceServices.getTimelineFiltered(any(Optional.class))).thenThrow(mockedException);
+        when(mockedException.getStatusCode()).thenReturn(500);
+        when(mockedException.getMessage()).thenReturn("This is an error");
+
+        Response r = twitterRequestResource.getTimelineFiltered(null);
+        verify(mockedResourceServices, times(1)).getTimelineFiltered(any(Optional.class));
+        assertEquals(500, r.getStatus());
+        ErrorMessage errorMessage = (ErrorMessage) r.getEntity();
         assertEquals("This is an error", errorMessage.getMessage());
     }
 }
