@@ -1,4 +1,4 @@
-package services.twitter4j;
+package bootcamp.services.twitter4j;
 
 import org.junit.Test;
 import twitter4j.TwitterException;

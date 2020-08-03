@@ -1,20 +1,21 @@
-package resources;
+package bootcamp.resources;
 
-import model.ErrorMessage;
-import model.Message;
+import bootcamp.model.ErrorMessage;
+import bootcamp.model.Message;
 
-import configuration.TwitterKeys;
-import services.twitter4j.TwitterResourceException;
-import services.twitter4j.TwitterResourceService;
+import bootcamp.configuration.TwitterKeys;
+import bootcamp.model.Tweet;
+import bootcamp.services.twitter4j.TwitterResourceException;
+import bootcamp.services.twitter4j.TwitterResourceService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import twitter4j.Status;
+
+import java.util.List;
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
@@ -24,7 +25,7 @@ public class TwitterRequestResource {
     public final String VERSION = "1.0";
 
     /**
-     * Constructor, sets up twitter using passed configuration settings
+     * Constructor, sets up twitter using passed bootcamp.configuration settings
      *
      * @param twitterKeys TwitterKeys containing keys for new twitter object
      */
@@ -52,8 +53,8 @@ public class TwitterRequestResource {
     public Response getTimeline() {
         logger.info("GET request at /api/" + VERSION + "/twitter/timeline was triggered");
         try {
-            List<Status> statusList = twitterResourceService.getTimeline();
-            return Response.ok(statusList).build();
+            List<Tweet> tweetList = twitterResourceService.getTimeline();
+            return Response.ok(tweetList).build();
         } catch (TwitterResourceException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
             return Response.status(e.getStatusCode()).entity(errorMessage).build();
@@ -71,8 +72,8 @@ public class TwitterRequestResource {
     public Response postTweet(Message post) {
         logger.info("POST request at /api/" + VERSION + "/twitter/tweet was triggered");
         try {
-            Status status = twitterResourceService.postTweet(post);
-            return Response.ok(status).build();
+            Tweet tweet = twitterResourceService.postTweet(post);
+            return Response.ok(tweet).build();
         } catch (TwitterResourceException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
             return Response.status(e.getStatusCode()).entity(errorMessage).build();

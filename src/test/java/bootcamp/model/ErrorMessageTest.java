@@ -1,4 +1,4 @@
-package model;
+package bootcamp.model;
 
 import org.junit.Test;
 

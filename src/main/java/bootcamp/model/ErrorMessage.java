@@ -1,4 +1,4 @@
-package model;
+package bootcamp.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package services.twitter4j;
+package bootcamp.services.twitter4j;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
