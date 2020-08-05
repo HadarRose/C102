@@ -12,7 +12,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,18 +81,15 @@ public class TwitterResourceService {
     }
 
     /**
-     * @return List<Tweet> containing Status representation for tweets from the timeline
+     * @return Optional<List < Tweet>> containing Status representation for tweets from the timeline
      * @throws TwitterResourceException
      */
-    public List<Tweet> getTimeline() throws TwitterResourceException {
+    public Optional<List<Tweet>> getTimeline() throws TwitterResourceException {
         logger.info("TwitterResourceService called getTimeline");
         try {
-            List<Status> statuses = twitter.getHomeTimeline();
-            List<Tweet> tweets = new ArrayList<Tweet>();
-            for (Status status : statuses) {
-                tweets.add(this.statusToTweet(status));
-            }
-            return tweets;
+            return Optional.ofNullable(twitter.getHomeTimeline().stream() // stream statuses
+                    .map(this::statusToTweet) // convert statuses to tweets
+                    .collect(Collectors.toList())); // collect as list of tweets and wrap as optional
         } catch (Exception e) {
             throw new TwitterResourceException(e);
         }
@@ -101,15 +97,15 @@ public class TwitterResourceService {
 
     /**
      * @param post Message containing content of tweet to be posted
-     * @return Tweet containing information regarding the uploaded message
+     * @return Optional<Tweet> containing information regarding the uploaded message
      * @throws TwitterResourceException
      */
-    public Tweet postTweet(Message post) throws TwitterResourceException {
+    public Optional<Tweet> postTweet(Message post) throws TwitterResourceException {
         logger.info("TwitterResourceService called postTweet");
         try {
             StatusUpdate statusUpdate = new StatusUpdate(post.getMessage());
-            Status status = twitter.updateStatus(statusUpdate);
-            return this.statusToTweet(status);
+            return Optional.ofNullable(twitter.updateStatus(statusUpdate))
+                    .map(status -> statusToTweet(status));
         } catch (Exception e) {
             throw new TwitterResourceException(e);
         }
@@ -117,18 +113,18 @@ public class TwitterResourceService {
 
     /**
      * @param keyword word by which the timeline will be filtered
-     * @return List<Tweet> list of Tweet objects from the user's timeline, filtered by keyword
+     * @return Optional<List < Tweet>> list of Tweet objects from the user's timeline, filtered by keyword
      * @throws TwitterResourceException
      */
-    public List<Tweet> getTimelineFiltered(Optional<String> keyword) throws TwitterResourceException {
+    public Optional<List<Tweet>> getTimelineFiltered(Optional<String> keyword) throws TwitterResourceException {
         logger.info("TwitterResourceService called getTimelineFiltered with keyword: {}", keyword);
         try {
             List<Status> statuses = twitter.getHomeTimeline();
-            List<Tweet> tweets = statuses.stream()
-                    .filter(status -> status.getText().toLowerCase().contains(keyword.get().toLowerCase())) // this will throw NoSuchElementException if keyword is null
-                    .map(status -> this.statusToTweet(status))
-                    .collect(Collectors.toList());
-            return tweets;
+            String kWord = keyword.get().toLowerCase(); // will throw the NoSuchElementException if keyword does not exist
+            return Optional.ofNullable(statuses.stream() // stream statuses
+                    .filter(status -> status.getText().toLowerCase().contains(kWord)) // filter statuses
+                    .map(this::statusToTweet) // convert to tweets
+                    .collect(Collectors.toList())); // collect stream to list, wrap list in Optional
         } catch (Exception e) {
             throw new TwitterResourceException(e);
         }

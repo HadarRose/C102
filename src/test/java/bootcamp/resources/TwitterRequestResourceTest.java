@@ -7,13 +7,12 @@ import org.junit.Before;
 import org.junit.Test;
 import bootcamp.services.twitter4j.TwitterResourceException;
 import bootcamp.services.twitter4j.TwitterResourceService;
-import twitter4j.Status;
 
 import javax.ws.rs.core.Response;
 
 import java.util.List;
 import java.util.Optional;
-// todo test for new method
+
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
@@ -30,7 +29,7 @@ public class TwitterRequestResourceTest {
     public void validTimeline() throws TwitterResourceException {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
         List<Tweet> mockedList = mock(List.class);
-        when(mockedResourceServices.getTimeline()).thenReturn(mockedList);
+        when(mockedResourceServices.getTimeline()).thenReturn(Optional.ofNullable(mockedList));
 
         Response r = twitterRequestResource.getTimeline();
         verify(mockedResourceServices, times(1)).getTimeline();
@@ -59,7 +58,7 @@ public class TwitterRequestResourceTest {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
         Tweet mockedTweet = mock(Tweet.class);
         Message mockedMessage = mock(Message.class);
-        when(mockedResourceServices.postTweet(any(Message.class))).thenReturn(mockedTweet);
+        when(mockedResourceServices.postTweet(any(Message.class))).thenReturn(Optional.ofNullable(mockedTweet));
 
         Response r = twitterRequestResource.postTweet(mockedMessage);
         Tweet tweet = (Tweet) r.getEntity();
@@ -85,10 +84,10 @@ public class TwitterRequestResourceTest {
     }
 
     @Test
-    public void validTimelineFilter() throws TwitterResourceException{
+    public void validTimelineFilter() throws TwitterResourceException {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
         List<Tweet> mockedList = mock(List.class);
-        when(mockedResourceServices.getTimelineFiltered(any(Optional.class))).thenReturn(mockedList);
+        when(mockedResourceServices.getTimelineFiltered(any(Optional.class))).thenReturn(Optional.ofNullable(mockedList));
 
         Response r = twitterRequestResource.getTimelineFiltered(null);
         verify(mockedResourceServices, times(1)).getTimelineFiltered(any(Optional.class));

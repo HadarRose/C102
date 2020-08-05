@@ -37,7 +37,7 @@ public class TwitterResourceServiceTest {
         listStatus.add(mockedStatus);
         when(mockedTwitter.getHomeTimeline()).thenReturn(listStatus);
         doReturn(mockedTweet).when(twitterResourceService).statusToTweet(mockedStatus);
-        List<Tweet> tweets = twitterResourceService.getTimeline();
+        Optional<List<Tweet>> tweets = twitterResourceService.getTimeline();
         verify(twitterResourceService, times(2)).statusToTweet(mockedStatus);
     }
 
@@ -46,7 +46,7 @@ public class TwitterResourceServiceTest {
     public void invalidTimeline() throws TwitterException, TwitterResourceException {
         TwitterResourceService twitterResourceService = new TwitterResourceService(mockedTwitter);
         when(mockedTwitter.getHomeTimeline()).thenThrow(TwitterException.class);
-        List<Tweet> tweetList = twitterResourceService.getTimeline();
+        Optional<List<Tweet>> tweetList = twitterResourceService.getTimeline();
     }
 
     // tests that getTimelineFiltered correctly returns only filtered Statuses (which are converted to Tweets)
@@ -66,15 +66,15 @@ public class TwitterResourceServiceTest {
         when(mockedTwitter.getHomeTimeline()).thenReturn(listStatus);
         doReturn(mockedTweet).when(twitterResourceService).statusToTweet(mockedStatus1);
 
-        List<Tweet> tweets = twitterResourceService.getTimelineFiltered(keyword);
+        Optional<List<Tweet>> tweets = twitterResourceService.getTimelineFiltered(keyword);
 
         // assert that statusToTweet was called for the first mockedStatus but not the other
         verify(twitterResourceService, times(1)).statusToTweet(mockedStatus1);
         verify(twitterResourceService, never()).statusToTweet(mockedStatus2);
 
         // assert that the list only has one element, which is the mockedtweet
-        assertEquals(1, tweets.size());
-        assertTrue(tweets.contains(mockedTweet));
+        assertEquals(1, tweets.get().size());
+        assertTrue(tweets.get().contains(mockedTweet));
     }
 
     // tests that having a null optional throws a TwitterResourceException
@@ -88,7 +88,7 @@ public class TwitterResourceServiceTest {
         when(mockedStatus.getText()).thenReturn("hello there");
         when(mockedTwitter.getHomeTimeline()).thenReturn(listStatus);
 
-        List<Tweet> tweets = twitterResourceService.getTimelineFiltered(null);
+        Optional<List<Tweet>> tweets = twitterResourceService.getTimelineFiltered(null);
     }
 
     /*TWEET TESTS*/
@@ -102,7 +102,7 @@ public class TwitterResourceServiceTest {
         Tweet mockedTweet = mock(Tweet.class);
         when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenReturn(mockedStatus);
         doReturn(mockedTweet).when(twitterResourceService).statusToTweet(mockedStatus);
-        Tweet tweet = twitterResourceService.postTweet(new Message("Hello!"));
+        Optional<Tweet> tweet = twitterResourceService.postTweet(new Message("Hello!"));
         verify(twitterResourceService, times(1)).statusToTweet(mockedStatus);
     }
 
@@ -111,7 +111,7 @@ public class TwitterResourceServiceTest {
     public void invalidPost() throws TwitterException, TwitterResourceException {
         TwitterResourceService twitterResourceService = new TwitterResourceService(mockedTwitter);
         when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenThrow(TwitterException.class);
-        Tweet tweet = twitterResourceService.postTweet(new Message("Hello!"));
+        Optional<Tweet> tweet = twitterResourceService.postTweet(new Message("Hello!"));
     }
 
     /*OTHER TESTS*/
