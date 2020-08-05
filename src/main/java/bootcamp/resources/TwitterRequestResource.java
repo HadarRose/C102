@@ -14,12 +14,14 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class TwitterRequestResource {
     private static Logger logger = LoggerFactory.getLogger(TwitterRequestResource.class);
+    private static final String SERVICE_ERROR = "Something went wrong.";
     private TwitterResourceService twitterResourceService;
     public final String VERSION = "1.0";
 
@@ -58,6 +60,10 @@ public class TwitterRequestResource {
         } catch (TwitterResourceException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
             return Response.status(e.getStatusCode()).entity(errorMessage).build();
+        } catch (NoSuchElementException e){
+            ErrorMessage errorMessage = new ErrorMessage(500, TwitterRequestResource.SERVICE_ERROR);
+            logger.error("TwitterResourceService returned an empty optional.");
+            return Response.status(500).entity(errorMessage).build();
         }
     }
 
@@ -77,6 +83,10 @@ public class TwitterRequestResource {
         } catch (TwitterResourceException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
             return Response.status(e.getStatusCode()).entity(errorMessage).build();
+        } catch (NoSuchElementException e){
+            ErrorMessage errorMessage = new ErrorMessage(500, TwitterRequestResource.SERVICE_ERROR);
+            logger.error("TwitterResourceService returned an empty optional.");
+            return Response.status(500).entity(errorMessage).build();
         }
     }
 
@@ -97,6 +107,10 @@ public class TwitterRequestResource {
         } catch (TwitterResourceException e) {
             ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
             return Response.status(e.getStatusCode()).entity(errorMessage).build();
+        } catch (NoSuchElementException e){
+            ErrorMessage errorMessage = new ErrorMessage(500, TwitterRequestResource.SERVICE_ERROR);
+            logger.error("TwitterResourceService returned an empty optional.");
+            return Response.status(500).entity(errorMessage).build();
         }
     }
 }
