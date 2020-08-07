@@ -7,6 +7,7 @@ import bootcamp.configuration.TwitterKeys;
 import bootcamp.services.twitter4j.TwitterResourceException;
 import bootcamp.services.twitter4j.TwitterResourceService;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
@@ -17,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+// todo the thing with the exceptions i was told to maybe do
+
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class TwitterRequestResource {
@@ -25,21 +28,13 @@ public class TwitterRequestResource {
     private TwitterResourceService twitterResourceService;
     public final String VERSION = "1.0";
 
-    /**
-     * Constructor, sets up twitter using passed bootcamp.configuration settings
-     *
-     * @param twitterKeys TwitterKeys containing keys for new twitter object
-     */
-    public TwitterRequestResource(TwitterKeys twitterKeys) {
-        twitterResourceService = new TwitterResourceService(twitterKeys);
-        logger.debug("TwitterRequestResource created with twitter keys");
-    }
 
     /**
-     * Constructor. For unit testing.
+     * Constructor
      *
      * @param twitterResourceService TwitterResourceService value for twitterResourceService property
      */
+    @Inject
     public TwitterRequestResource(TwitterResourceService twitterResourceService) {
         this.twitterResourceService = twitterResourceService;
     }
