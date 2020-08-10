@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-// todo change logs that say twittercreationservice
-// todo most likely change this to interfaces?
 @Module
 public class TwitterResourceService {
     private static Logger logger = LoggerFactory.getLogger(TwitterResourceService.class);
@@ -46,41 +44,45 @@ public class TwitterResourceService {
 
     /**
      * @return Optional<List < Tweet>> containing Status representation for tweets from the timeline
-     * @throws TwitterResourceException
+     * @throws TwitterResourceExceptionHandler
      */
-    public Optional<List<Tweet>> getTimeline() throws TwitterResourceException {
+    public Optional<List<Tweet>> getTimeline() {
         logger.info("TwitterResourceService called getTimeline");
         try {
             return Optional.ofNullable(twitter.getHomeTimeline().stream() // stream statuses
                     .map(this::statusToTweet) // convert statuses to tweets
                     .collect(Collectors.toList())); // collect as list of tweets and wrap as optional
         } catch (Exception e) {
-            throw new TwitterResourceException(e);
+            TwitterResourceExceptionHandler exceptionHandler = new TwitterResourceExceptionHandler(e);
+            logger.error("Error status: " + exceptionHandler.getStatusCode() + " with message: " + exceptionHandler.getMessage());
+            return Optional.empty();
         }
     }
 
     /**
      * @param post Message containing content of tweet to be posted
      * @return Optional<Tweet> containing information regarding the uploaded message
-     * @throws TwitterResourceException
+     * @throws TwitterResourceExceptionHandler
      */
-    public Optional<Tweet> postTweet(Message post) throws TwitterResourceException {
+    public Optional<Tweet> postTweet(Message post) {
         logger.info("TwitterResourceService called postTweet");
         try {
             StatusUpdate statusUpdate = new StatusUpdate(post.getMessage());
             return Optional.ofNullable(twitter.updateStatus(statusUpdate))
                     .map(status -> statusToTweet(status));
         } catch (Exception e) {
-            throw new TwitterResourceException(e);
+            TwitterResourceExceptionHandler exceptionHandler = new TwitterResourceExceptionHandler(e);
+            logger.error("Error status: " + exceptionHandler.getStatusCode() + " with message: " + exceptionHandler.getMessage());
+            return Optional.empty();
         }
     }
 
     /**
      * @param keyword word by which the timeline will be filtered
      * @return Optional<List < Tweet>> list of Tweet objects from the user's timeline, filtered by keyword
-     * @throws TwitterResourceException
+     * @throws TwitterResourceExceptionHandler
      */
-    public Optional<List<Tweet>> getTimelineFiltered(Optional<String> keyword) throws TwitterResourceException {
+    public Optional<List<Tweet>> getTimelineFiltered(Optional<String> keyword) {
         logger.info("TwitterResourceService called getTimelineFiltered with keyword: {}", keyword);
         try {
             List<Status> statuses = twitter.getHomeTimeline();
@@ -90,7 +92,9 @@ public class TwitterResourceService {
                     .map(this::statusToTweet) // convert to tweets
                     .collect(Collectors.toList())); // collect stream to list, wrap list in Optional
         } catch (Exception e) {
-            throw new TwitterResourceException(e);
+            TwitterResourceExceptionHandler exceptionHandler = new TwitterResourceExceptionHandler(e);
+            logger.error("Error status: " + exceptionHandler.getStatusCode() + " with message: " + exceptionHandler.getMessage());
+            return Optional.empty();
         }
     }
 }

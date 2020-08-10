@@ -3,8 +3,6 @@ package bootcamp.resources;
 import bootcamp.model.ErrorMessage;
 import bootcamp.model.Message;
 
-import bootcamp.configuration.TwitterKeys;
-import bootcamp.services.twitter4j.TwitterResourceException;
 import bootcamp.services.twitter4j.TwitterResourceService;
 
 import javax.inject.Inject;
@@ -15,16 +13,14 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
-
-// todo the thing with the exceptions i was told to maybe do
 
 @Path("/api/1.0/twitter")
 @Produces(MediaType.APPLICATION_JSON)
 public class TwitterRequestResource {
     private static Logger logger = LoggerFactory.getLogger(TwitterRequestResource.class);
-    private static final String SERVICE_ERROR = "Something went wrong.";
+    public static final String SERVICE_ERROR = "Something went wrong.";
+    private static final ErrorMessage ERROR_MESSAGE = new ErrorMessage(500, TwitterRequestResource.SERVICE_ERROR);
     private TwitterResourceService twitterResourceService;
     public final String VERSION = "1.0";
 
@@ -48,18 +44,9 @@ public class TwitterRequestResource {
     @Path("/timeline")
     public Response getTimeline() {
         logger.info("GET request at /api/" + VERSION + "/twitter/timeline was triggered");
-        try {
-            return twitterResourceService.getTimeline() // Optional<List<Tweet>>
-                    .map(tweets -> Response.ok(tweets).build()) // Optional<Response>
-                    .get(); // Response;
-        } catch (TwitterResourceException e) {
-            ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
-            return Response.status(e.getStatusCode()).entity(errorMessage).build();
-        } catch (NoSuchElementException e){
-            ErrorMessage errorMessage = new ErrorMessage(500, TwitterRequestResource.SERVICE_ERROR);
-            logger.error("TwitterResourceService returned an empty optional.");
-            return Response.status(500).entity(errorMessage).build();
-        }
+        return twitterResourceService.getTimeline() // Optional<List<Tweet>>
+                .map(tweets -> Response.ok(tweets).build()) // Optional<Response>
+                .orElse(Response.status(500).entity(ERROR_MESSAGE).build()); // Response (error or mapped)
     }
 
     /**
@@ -71,18 +58,9 @@ public class TwitterRequestResource {
     @Path("/timeline/filter")
     public Response getTimelineFiltered(@QueryParam("keyword") Optional<String> keyword) {
         logger.info("GET request at /api/" + VERSION + "/twitter/timeline/filter?keyword=" + keyword + " was triggered");
-        try {
-            return twitterResourceService.getTimelineFiltered(keyword) // Optional<List<Tweet>> from service
-                    .map(tweets -> Response.ok(tweets).build()) // Optional<Response>
-                    .get(); // Response
-        } catch (TwitterResourceException e) {
-            ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
-            return Response.status(e.getStatusCode()).entity(errorMessage).build();
-        } catch (NoSuchElementException e){
-            ErrorMessage errorMessage = new ErrorMessage(500, TwitterRequestResource.SERVICE_ERROR);
-            logger.error("TwitterResourceService returned an empty optional.");
-            return Response.status(500).entity(errorMessage).build();
-        }
+        return twitterResourceService.getTimelineFiltered(keyword) // Optional<List<Tweet>> from service
+                .map(tweets -> Response.ok(tweets).build()) // Optional<Response>
+                .orElse(Response.status(500).entity(ERROR_MESSAGE).build()); // Response (error or mapped)
     }
 
     /**
@@ -95,17 +73,8 @@ public class TwitterRequestResource {
     @Path("/tweet")
     public Response postTweet(Message post) {
         logger.info("POST request at /api/" + VERSION + "/twitter/tweet was triggered");
-        try {
-            return twitterResourceService.postTweet(post) // Optional<Tweet> from service
-                    .map(t -> Response.ok(t).build()) // Optional<Response>
-                    .get(); // Response
-        } catch (TwitterResourceException e) {
-            ErrorMessage errorMessage = new ErrorMessage(e.getStatusCode(), e.getMessage());
-            return Response.status(e.getStatusCode()).entity(errorMessage).build();
-        } catch (NoSuchElementException e){
-            ErrorMessage errorMessage = new ErrorMessage(500, TwitterRequestResource.SERVICE_ERROR);
-            logger.error("TwitterResourceService returned an empty optional.");
-            return Response.status(500).entity(errorMessage).build();
-        }
+        return twitterResourceService.postTweet(post) // Optional<Tweet> from service
+                .map(t -> Response.ok(t).build()) // Optional<Response>
+                .orElse(Response.status(500).entity(ERROR_MESSAGE).build()); // Response (error or mapped)
     }
 }

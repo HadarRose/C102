@@ -6,8 +6,8 @@ import twitter4j.TwitterException;
 
 import java.util.NoSuchElementException;
 
-public class TwitterResourceException extends Exception {
-    private static Logger logger = LoggerFactory.getLogger(TwitterResourceException.class);
+public class TwitterResourceExceptionHandler {
+    private static Logger logger = LoggerFactory.getLogger(TwitterResourceExceptionHandler.class);
     /**
      * the status code associated with a general error
      */
@@ -44,7 +44,7 @@ public class TwitterResourceException extends Exception {
      *
      * @param exception the exception that this object will expend upon
      */
-    public TwitterResourceException(Exception exception) {
+    public TwitterResourceExceptionHandler(Exception exception) {
         if (exception instanceof TwitterException) {
             TwitterException twitterException = (TwitterException) exception;
             int code = twitterException.getStatusCode();
@@ -81,7 +81,6 @@ public class TwitterResourceException extends Exception {
      *
      * @return String, message property
      */
-    @Override
     public String getMessage() {
         return this.message;
     }

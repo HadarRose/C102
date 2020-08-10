@@ -3,11 +3,13 @@ package bootcamp.resources;
 import bootcamp.model.ErrorMessage;
 import bootcamp.model.Message;
 import bootcamp.model.Tweet;
+import com.google.googlejavaformat.Op;
 import org.junit.Before;
 import org.junit.Test;
-import bootcamp.services.twitter4j.TwitterResourceException;
+import bootcamp.services.twitter4j.TwitterResourceExceptionHandler;
 import bootcamp.services.twitter4j.TwitterResourceService;
 
+import javax.swing.text.html.Option;
 import javax.ws.rs.core.Response;
 
 import java.util.List;
@@ -26,7 +28,7 @@ public class TwitterRequestResourceTest {
 
     // the following tests test that the methods call the correct bootcamp.services and return the correct responses
     @Test
-    public void validTimeline() throws TwitterResourceException {
+    public void validTimeline() {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
         List<Tweet> mockedList = mock(List.class);
         when(mockedResourceServices.getTimeline()).thenReturn(Optional.ofNullable(mockedList));
@@ -39,22 +41,19 @@ public class TwitterRequestResourceTest {
     }
 
     @Test
-    public void invalidTimeline() throws TwitterResourceException {
+    public void invalidTimeline() {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
-        TwitterResourceException mockedException = mock(TwitterResourceException.class);
-        when(mockedResourceServices.getTimeline()).thenThrow(mockedException);
-        when(mockedException.getStatusCode()).thenReturn(500);
-        when(mockedException.getMessage()).thenReturn("This is an error");
+        when(mockedResourceServices.getTimeline()).thenReturn(Optional.empty());
 
         Response r = twitterRequestResource.getTimeline();
         verify(mockedResourceServices, times(1)).getTimeline();
         assertEquals(500, r.getStatus());
         ErrorMessage errorMessage = (ErrorMessage) r.getEntity();
-        assertEquals("This is an error", errorMessage.getMessage());
+        assertEquals(TwitterRequestResource.SERVICE_ERROR, errorMessage.getMessage());
     }
 
     @Test
-    public void validPost() throws TwitterResourceException {
+    public void validPost() {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
         Tweet mockedTweet = mock(Tweet.class);
         Message mockedMessage = mock(Message.class);
@@ -68,23 +67,20 @@ public class TwitterRequestResourceTest {
     }
 
     @Test
-    public void invalidPost() throws TwitterResourceException {
+    public void invalidPost() {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
         Message mockedMessage = mock(Message.class);
-        TwitterResourceException mockedException = mock(TwitterResourceException.class);
-        when(mockedResourceServices.postTweet(any(Message.class))).thenThrow(mockedException);
-        when(mockedException.getStatusCode()).thenReturn(500);
-        when(mockedException.getMessage()).thenReturn("This is an error");
+        when(mockedResourceServices.postTweet(any(Message.class))).thenReturn(Optional.empty());
 
         Response r = twitterRequestResource.postTweet(mockedMessage);
         ErrorMessage errorMessage = (ErrorMessage) r.getEntity();
         verify(mockedResourceServices, times(1)).postTweet(any(Message.class));
         assertEquals(500, r.getStatus());
-        assertEquals("This is an error", errorMessage.getMessage());
+        assertEquals(TwitterRequestResource.SERVICE_ERROR, errorMessage.getMessage());
     }
 
     @Test
-    public void validTimelineFilter() throws TwitterResourceException {
+    public void validTimelineFilter() {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
         List<Tweet> mockedList = mock(List.class);
         when(mockedResourceServices.getTimelineFiltered(any(Optional.class))).thenReturn(Optional.ofNullable(mockedList));
@@ -97,17 +93,14 @@ public class TwitterRequestResourceTest {
     }
 
     @Test
-    public void invalidTimelineFilter() throws TwitterResourceException {
+    public void invalidTimelineFilter() {
         TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
-        TwitterResourceException mockedException = mock(TwitterResourceException.class);
-        when(mockedResourceServices.getTimelineFiltered(any(Optional.class))).thenThrow(mockedException);
-        when(mockedException.getStatusCode()).thenReturn(500);
-        when(mockedException.getMessage()).thenReturn("This is an error");
+        when(mockedResourceServices.getTimelineFiltered(any(Optional.class))).thenReturn(Optional.empty());
 
         Response r = twitterRequestResource.getTimelineFiltered(null);
         verify(mockedResourceServices, times(1)).getTimelineFiltered(any(Optional.class));
         assertEquals(500, r.getStatus());
         ErrorMessage errorMessage = (ErrorMessage) r.getEntity();
-        assertEquals("This is an error", errorMessage.getMessage());
+        assertEquals(TwitterRequestResource.SERVICE_ERROR, errorMessage.getMessage());
     }
 }
