@@ -3,7 +3,6 @@ package bootcamp.services.twitter4j;
 import bootcamp.model.Message;
 import bootcamp.model.Tweet;
 import bootcamp.model.User;
-import dagger.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.Status;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Module
 public class TwitterResourceService {
     private static Logger logger = LoggerFactory.getLogger(TwitterResourceService.class);
     private Twitter twitter;
