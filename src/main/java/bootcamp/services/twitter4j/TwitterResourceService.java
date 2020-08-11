@@ -3,6 +3,8 @@ package bootcamp.services.twitter4j;
 import bootcamp.model.Message;
 import bootcamp.model.Tweet;
 import bootcamp.model.User;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.Status;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class TwitterResourceService {
     private static Logger logger = LoggerFactory.getLogger(TwitterResourceService.class);
     private Twitter twitter;
+    private Cache<String, Tweet> cache = CacheBuilder.newBuilder().maximumSize(20).build();
 
     /**
      * Constructor.
@@ -29,15 +32,30 @@ public class TwitterResourceService {
     }
 
     /**
-     * Converts Status object to Tweet object
+     * @return cache
+     */
+    public Cache<String, Tweet> getCache() {
+        return cache;
+    }
+
+    /**
+     * Converts Status object to Tweet object, only if it hasn't been converted previously and is in cache.
      *
      * @param status Status object to be converted
      * @return Tweet version of status
      */
     public Tweet statusToTweet(Status status) {
-        User user = new User(status.getUser().getScreenName(),
-                status.getUser().getName(), status.getUser().getProfileImageURL());
-        return new Tweet(status.getText(), status.getCreatedAt(), user);
+        Tweet tweet = cache.getIfPresent(Long.toString(status.getId()));
+        if (tweet == null) {
+            User user = new User(status.getUser().getScreenName(),
+                    status.getUser().getName(), status.getUser().getProfileImageURL());
+            Tweet newTweet = new Tweet(status.getText(), status.getCreatedAt(), user);
+            cache.put(Long.toString(status.getId()), newTweet);
+            return newTweet;
+        } else {
+            return tweet;
+        }
+
     }
 
     /**

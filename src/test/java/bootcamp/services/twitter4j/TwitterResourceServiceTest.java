@@ -3,6 +3,7 @@ package bootcamp.services.twitter4j;
 import bootcamp.model.Message;
 import bootcamp.model.Tweet;
 import bootcamp.model.User;
+import com.google.common.cache.Cache;
 import org.junit.Before;
 import org.junit.Test;
 import twitter4j.*;
@@ -114,32 +115,5 @@ public class TwitterResourceServiceTest {
         when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenThrow(TwitterException.class);
         Optional<Tweet> tweet = twitterResourceService.postTweet(new Message("Hello!"));
         assertFalse(tweet.isPresent());
-    }
-
-    /*OTHER TESTS*/
-    // test for statusToTweet that makes sure that all of the status variables go into the correct tweet properties
-    @Test
-    public void testStatusToTweet() {
-        // needed variables:
-        TwitterResourceService twitterResourceService = new TwitterResourceService(mockedTwitter);
-        Status mockedStatus = mock(Status.class);
-        twitter4j.User mockUser = mock(twitter4j.User.class);
-        User user = new User("twitterhandle", "name", "url");
-        Tweet tweet = new Tweet("message", new Date(), user);
-        // when statements
-        when(mockedStatus.getCreatedAt()).thenReturn(tweet.getCreatedAt());
-        when(mockedStatus.getUser()).thenReturn(mockUser);
-        when(mockedStatus.getText()).thenReturn(tweet.getMessage());
-        when(mockUser.getScreenName()).thenReturn(user.getTwitterHandle());
-        when(mockUser.getName()).thenReturn(user.getName());
-        when(mockUser.getProfileImageURL()).thenReturn(user.getProfileImageUrl());
-        // call statusToTweet
-        Tweet resultingTweet = twitterResourceService.statusToTweet(mockedStatus);
-        // compare content
-        assertEquals(tweet.getMessage(), resultingTweet.getMessage());
-        assertEquals(tweet.getCreatedAt(), resultingTweet.getCreatedAt());
-        assertEquals(tweet.getUser().getName(), resultingTweet.getUser().getName());
-        assertEquals(tweet.getUser().getProfileImageUrl(), resultingTweet.getUser().getProfileImageUrl());
-        assertEquals(tweet.getUser().getTwitterHandle(), resultingTweet.getUser().getTwitterHandle());
     }
 }
