@@ -11,7 +11,7 @@ import twitter4j.conf.ConfigurationBuilder;
 @Module
 public class ConfigurationModule {
     private static Logger logger = LoggerFactory.getLogger(ConfigurationModule.class);
-    private Twitter twitter;
+    private ApplicationConfiguration applicationConfiguration;
 
     /**
      * Constructor
@@ -19,17 +19,7 @@ public class ConfigurationModule {
      * @param applicationConfiguration the ApplicationConfiguration used to retrieve the twitter keys
      */
     public ConfigurationModule(ApplicationConfiguration applicationConfiguration) {
-        logger.debug("ConfigurationModule construction started");
-        TwitterKeys twitterKeys = applicationConfiguration.getTwitterKeys();
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true)
-                .setOAuthConsumerKey(twitterKeys.getOauthconsumerkey())
-                .setOAuthConsumerSecret(twitterKeys.getOauthconsumersecret())
-                .setOAuthAccessToken(twitterKeys.getOauthaccesstoken())
-                .setOAuthAccessTokenSecret(twitterKeys.getOauthaccesstokensecret());
-        TwitterFactory tf = new TwitterFactory(cb.build());
-        twitter = tf.getInstance();
-        logger.debug("ConfigurationModule construction ended");
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     /**
@@ -39,6 +29,17 @@ public class ConfigurationModule {
      */
     @Provides
     public Twitter provideTwitter() {
+        logger.debug("ConfigurationModule construction started");
+        TwitterKeys twitterKeys = applicationConfiguration.getTwitterKeys();
+        ConfigurationBuilder cb = new ConfigurationBuilder();
+        cb.setDebugEnabled(true)
+                .setOAuthConsumerKey(twitterKeys.getOauthconsumerkey())
+                .setOAuthConsumerSecret(twitterKeys.getOauthconsumersecret())
+                .setOAuthAccessToken(twitterKeys.getOauthaccesstoken())
+                .setOAuthAccessTokenSecret(twitterKeys.getOauthaccesstokensecret());
+        TwitterFactory tf = new TwitterFactory(cb.build());
+        Twitter twitter = tf.getInstance();
+        logger.debug("ConfigurationModule construction ended");
         return twitter;
     }
 }

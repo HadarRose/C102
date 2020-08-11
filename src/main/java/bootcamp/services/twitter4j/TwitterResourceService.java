@@ -44,7 +44,6 @@ public class TwitterResourceService {
 
     /**
      * @return Optional<List < Tweet>> containing Status representation for tweets from the timeline
-     * @throws TwitterResourceExceptionHandler
      */
     public Optional<List<Tweet>> getTimeline() {
         logger.info("TwitterResourceService called getTimeline");
@@ -62,7 +61,6 @@ public class TwitterResourceService {
     /**
      * @param post Message containing content of tweet to be posted
      * @return Optional<Tweet> containing information regarding the uploaded message
-     * @throws TwitterResourceExceptionHandler
      */
     public Optional<Tweet> postTweet(Message post) {
         logger.info("TwitterResourceService called postTweet");
@@ -80,7 +78,6 @@ public class TwitterResourceService {
     /**
      * @param keyword word by which the timeline will be filtered
      * @return Optional<List < Tweet>> list of Tweet objects from the user's timeline, filtered by keyword
-     * @throws TwitterResourceExceptionHandler
      */
     public Optional<List<Tweet>> getTimelineFiltered(Optional<String> keyword) {
         logger.info("TwitterResourceService called getTimelineFiltered with keyword: {}", keyword);
