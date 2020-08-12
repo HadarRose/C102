@@ -1,6 +1,5 @@
 package bootcamp;
 
-import bootcamp.configuration.ConfigurationModule;
 import bootcamp.resources.TwitterRequestResource;
 import dagger.Component;
 

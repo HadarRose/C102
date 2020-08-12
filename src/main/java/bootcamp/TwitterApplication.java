@@ -1,7 +1,6 @@
 package bootcamp;
 
 import bootcamp.configuration.ApplicationConfiguration;
-import bootcamp.configuration.ConfigurationModule;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;

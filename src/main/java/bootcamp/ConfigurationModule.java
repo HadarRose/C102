@@ -1,5 +1,7 @@
-package bootcamp.configuration;
+package bootcamp;
 
+import bootcamp.configuration.ApplicationConfiguration;
+import bootcamp.configuration.TwitterKeys;
 import dagger.Module;
 import dagger.Provides;
 import org.slf4j.Logger;
