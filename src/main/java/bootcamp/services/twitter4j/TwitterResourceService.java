@@ -3,8 +3,9 @@ package bootcamp.services.twitter4j;
 import bootcamp.model.Message;
 import bootcamp.model.Tweet;
 import bootcamp.model.User;
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import twitter4j.Status;
@@ -19,7 +20,15 @@ import java.util.stream.Collectors;
 public class TwitterResourceService {
     private static Logger logger = LoggerFactory.getLogger(TwitterResourceService.class);
     private Twitter twitter;
-    private Cache<String, Tweet> cache = CacheBuilder.newBuilder().maximumSize(20).build();
+    private static String KEY = "now";
+    private LoadingCache<String, Optional<List<Status>>> cache = CacheBuilder.newBuilder().build(
+            new CacheLoader<String, Optional<List<Status>>>() {
+                @Override
+                public Optional<List<Status>> load(String s) throws Exception {
+                    return Optional.ofNullable(twitter.getHomeTimeline());
+                }
+            }
+    );
 
     /**
      * Constructor.
@@ -32,30 +41,15 @@ public class TwitterResourceService {
     }
 
     /**
-     * @return cache
-     */
-    public Cache<String, Tweet> getCache() {
-        return cache;
-    }
-
-    /**
-     * Converts Status object to Tweet object, only if it hasn't been converted previously and is in cache.
+     * Converts Status object to Tweet object
      *
      * @param status Status object to be converted
      * @return Tweet version of status
      */
     public Tweet statusToTweet(Status status) {
-        Tweet tweet = cache.getIfPresent(Long.toString(status.getId()));
-        if (tweet == null) {
-            User user = new User(status.getUser().getScreenName(),
-                    status.getUser().getName(), status.getUser().getProfileImageURL());
-            Tweet newTweet = new Tweet(status.getText(), status.getCreatedAt(), user);
-            cache.put(Long.toString(status.getId()), newTweet);
-            return newTweet;
-        } else {
-            return tweet;
-        }
-
+        User user = new User(status.getUser().getScreenName(),
+                status.getUser().getName(), status.getUser().getProfileImageURL());
+        return new Tweet(status.getText(), status.getCreatedAt(), user);
     }
 
     /**
@@ -64,7 +58,7 @@ public class TwitterResourceService {
     public Optional<List<Tweet>> getTimeline() {
         logger.info("TwitterResourceService called getTimeline");
         try {
-            return Optional.ofNullable(twitter.getHomeTimeline().stream() // stream statuses
+            return Optional.ofNullable(this.cache.getUnchecked(KEY).get().stream() // stream statuses
                     .map(this::statusToTweet) // convert statuses to tweets
                     .collect(Collectors.toList())); // collect as list of tweets and wrap as optional
         } catch (Exception e) {
@@ -98,9 +92,8 @@ public class TwitterResourceService {
     public Optional<List<Tweet>> getTimelineFiltered(Optional<String> keyword) {
         logger.info("TwitterResourceService called getTimelineFiltered with keyword: {}", keyword);
         try {
-            List<Status> statuses = twitter.getHomeTimeline();
             String kWord = keyword.get().toLowerCase(); // will throw the NoSuchElementException if keyword does not exist
-            return Optional.ofNullable(statuses.stream() // stream statuses
+            return Optional.ofNullable(this.cache.getUnchecked(KEY).get().stream() // stream statuses
                     .filter(status -> status.getText().toLowerCase().contains(kWord)) // filter statuses
                     .map(this::statusToTweet) // convert to tweets
                     .collect(Collectors.toList())); // collect stream to list, wrap list in Optional
