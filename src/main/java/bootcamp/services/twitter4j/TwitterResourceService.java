@@ -30,6 +30,7 @@ public class TwitterResourceService {
             }
     );
 
+
     /**
      * Constructor.
      *
@@ -40,8 +41,9 @@ public class TwitterResourceService {
         this.twitter = twitter;
     }
 
+
     /**
-     * Converts Status object to Tweet object
+     * Converts Status object to Tweet object, only if it hasn't been converted previously and is in cache.
      *
      * @param status Status object to be converted
      * @return Tweet version of status
