@@ -4,7 +4,6 @@ import bootcamp.configuration.ApplicationConfiguration;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import bootcamp.resources.TwitterRequestResource;
 
 public class TwitterApplication extends Application<ApplicationConfiguration> {
     public static void main(String[] args) throws Exception {
@@ -12,13 +11,13 @@ public class TwitterApplication extends Application<ApplicationConfiguration> {
     }
 
     @Override
-    public void initialize(Bootstrap<ApplicationConfiguration> bootstrap) {
-
-    }
+    public void initialize(Bootstrap<ApplicationConfiguration> bootstrap) {}
 
     @Override
     public void run(ApplicationConfiguration config, Environment environment) {
-        final TwitterRequestResource resource = new TwitterRequestResource(config.getTwitterKeys());
-        environment.jersey().register(resource);
+        TwitterResourceComponent comp = DaggerTwitterResourceComponent.builder()
+                .configurationModule(new ConfigurationModule(config))
+                .build();
+        environment.jersey().register(comp.twitterRequestResource());
     }
 }

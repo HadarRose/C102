@@ -11,8 +11,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -28,7 +27,7 @@ public class TwitterResourceServiceTest {
     /*tests that when TwitterResourceService.getTimeline() is called, it will produce a status and send that
      * status to its statusToTweet method. The validity of statusToTweet is tested elsewhere.*/
     @Test
-    public void validTimeline() throws TwitterException, TwitterResourceException {
+    public void validTimeline() throws TwitterException {
         TwitterResourceService twitterResourceService = spy(new TwitterResourceService(mockedTwitter));
         Tweet mockedTweet = mock(Tweet.class);
         Status mockedStatus = mock(Status.class);
@@ -41,17 +40,18 @@ public class TwitterResourceServiceTest {
         verify(twitterResourceService, times(2)).statusToTweet(mockedStatus);
     }
 
-    // tests that if the internal Twitter object throws an error, the method throws a TwitterResourceException
-    @Test(expected = TwitterResourceException.class)
-    public void invalidTimeline() throws TwitterException, TwitterResourceException {
+    // tests that if the internal Twitter object throws an error, the method returns an empty optional
+    @Test()
+    public void invalidTimeline() throws TwitterException {
         TwitterResourceService twitterResourceService = new TwitterResourceService(mockedTwitter);
         when(mockedTwitter.getHomeTimeline()).thenThrow(TwitterException.class);
         Optional<List<Tweet>> tweetList = twitterResourceService.getTimeline();
+        assertFalse(tweetList.isPresent());
     }
 
     // tests that getTimelineFiltered correctly returns only filtered Statuses (which are converted to Tweets)
     @Test
-    public void filteredTimelineTest() throws TwitterException, TwitterResourceException {
+    public void filteredTimelineTest() throws TwitterException {
         TwitterResourceService twitterResourceService = spy(new TwitterResourceService(mockedTwitter));
         Optional<String> keyword = Optional.of("hello");
         Status mockedStatus1 = mock(Status.class);
@@ -77,9 +77,9 @@ public class TwitterResourceServiceTest {
         assertTrue(tweets.get().contains(mockedTweet));
     }
 
-    // tests that having a null optional throws a TwitterResourceException
-    @Test(expected = TwitterResourceException.class)
-    public void filteredTimelineOptionalException() throws TwitterException, TwitterResourceException {
+    // tests that having a null optional returns an empty optional
+    @Test()
+    public void filteredTimelineOptionalException() throws TwitterException {
         TwitterResourceService twitterResourceService = spy(new TwitterResourceService(mockedTwitter));
         Status mockedStatus = mock(Status.class);
         ResponseListStatusTestClass<Status> listStatus = new ResponseListStatusTestClass<>();
@@ -89,6 +89,7 @@ public class TwitterResourceServiceTest {
         when(mockedTwitter.getHomeTimeline()).thenReturn(listStatus);
 
         Optional<List<Tweet>> tweets = twitterResourceService.getTimelineFiltered(null);
+        assertFalse(tweets.isPresent());
     }
 
     /*TWEET TESTS*/
@@ -96,7 +97,7 @@ public class TwitterResourceServiceTest {
     /*tests that when TwitterResourceService.postTweet() is called, it will produce a status and send that
      * status to its statusToTweet method. The validity of statusToTweet is tested elsewhere.*/
     @Test
-    public void validPost() throws TwitterException, TwitterResourceException {
+    public void validPost() throws TwitterException {
         TwitterResourceService twitterResourceService = spy(new TwitterResourceService(mockedTwitter));
         Status mockedStatus = mock(Status.class);
         Tweet mockedTweet = mock(Tweet.class);
@@ -106,12 +107,13 @@ public class TwitterResourceServiceTest {
         verify(twitterResourceService, times(1)).statusToTweet(mockedStatus);
     }
 
-    // tests that if the internal Twitter object throws an error, the method throws a TwitterResourceException
-    @Test(expected = TwitterResourceException.class)
-    public void invalidPost() throws TwitterException, TwitterResourceException {
+    // tests that if the internal Twitter object throws an error, the method returns an empty optional
+    @Test
+    public void invalidPost() throws TwitterException {
         TwitterResourceService twitterResourceService = new TwitterResourceService(mockedTwitter);
         when(mockedTwitter.updateStatus(any(StatusUpdate.class))).thenThrow(TwitterException.class);
         Optional<Tweet> tweet = twitterResourceService.postTweet(new Message("Hello!"));
+        assertFalse(tweet.isPresent());
     }
 
     /*OTHER TESTS*/
