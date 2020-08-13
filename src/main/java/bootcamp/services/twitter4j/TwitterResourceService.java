@@ -78,6 +78,7 @@ public class TwitterResourceService {
         logger.info("TwitterResourceService called postTweet");
         try {
             StatusUpdate statusUpdate = new StatusUpdate(post.getMessage());
+            cache.invalidateAll(); // clear cache so that the new message is there when it's loaded again
             return Optional.ofNullable(twitter.updateStatus(statusUpdate))
                     .map(status -> statusToTweet(status));
         } catch (Exception e) {
