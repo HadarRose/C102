@@ -76,11 +76,12 @@ public class TwitterResourceService {
      */
     public Optional<Tweet> postTweet(Message post) {
         logger.info("TwitterResourceService called postTweet");
-        cache.invalidateAll(); // clear cache so that the new message is there when it's loaded again
         try {
             StatusUpdate statusUpdate = new StatusUpdate(post.getMessage());
-            return Optional.ofNullable(twitter.updateStatus(statusUpdate))
+            Optional<Tweet> tweet =  Optional.ofNullable(twitter.updateStatus(statusUpdate))
                     .map(status -> statusToTweet(status));
+            cache.invalidateAll(); // clear cache so that the new message is there when it's loaded again
+            return tweet;
         } catch (Exception e) {
             TwitterResourceExceptionHandler exceptionHandler = new TwitterResourceExceptionHandler(e);
             logger.error("Error status: " + exceptionHandler.getStatusCode() + " with message: " + exceptionHandler.getMessage());
