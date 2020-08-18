@@ -1,10 +1,11 @@
 package bootcamp.model;
 
 import java.util.Date;
-
+// todo clean and update hashcode and toString and equals
 public class Tweet {
     private String message;
     private Date createdAt;
+    private String id;
     private User user;
 
     /**
@@ -14,15 +15,17 @@ public class Tweet {
      * @param createdAt (Date)
      * @param user      (User)
      */
-    public Tweet(String message, Date createdAt, User user) {
+    public Tweet(String message, Date createdAt, String id, User user) {
         this.message = message;
         this.createdAt = createdAt;
+        this.id = id;
         this.user = user;
     }
 
     @Override
     public String toString(){
-        return "message: " + message + "\ncreatedAt" + createdAt.toString() + "\nuser: " + user.toString();
+        return "message: " + message + "\ncreatedAt" + createdAt.toString()
+                + "\nsource" + id + "\nuser: " + user.toString();
     }
 
     @Override
@@ -31,6 +34,7 @@ public class Tweet {
 
         result = 31 * result + message.hashCode();
         result = 31 * result + createdAt.hashCode();
+        result = 31 * result + id.hashCode();
         result = 31 * result + user.hashCode();
 
         return result;
@@ -46,7 +50,8 @@ public class Tweet {
         }
 
         Tweet tweet = (Tweet) o;
-        if(this.user.equals(tweet.user) && this.createdAt.equals(tweet.createdAt) && this.message.equals(tweet.message)){
+        if(this.user.equals(tweet.user) && this.createdAt.equals(tweet.createdAt)
+                && this.message.equals(tweet.message) && this.id.equals(tweet.id)){
             return true;
         } else {
             return false;
@@ -65,6 +70,13 @@ public class Tweet {
      */
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    /**
+     * @return String source
+     * */
+    public String getId() {
+        return id;
     }
 
     /**
@@ -93,5 +105,12 @@ public class Tweet {
      */
     public void setUser(User user) {
         this.user = user;
+    }
+
+    /**
+     * @param id
+     * */
+    public void setId(String id) {
+        this.id = id;
     }
 }
