@@ -51,7 +51,7 @@ public class TwitterResourceService {
     public Tweet statusToTweet(Status status) {
         User user = new User(status.getUser().getScreenName(),
                 status.getUser().getName(), status.getUser().getProfileImageURL());
-        return new Tweet(status.getText(), status.getCreatedAt(), user);
+        return new Tweet(status.getText(), status.getCreatedAt(), Long.toString(status.getId()), user);
     }
 
     /**
