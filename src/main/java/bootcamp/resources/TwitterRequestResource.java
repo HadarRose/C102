@@ -64,6 +64,20 @@ public class TwitterRequestResource {
     }
 
     /**
+     * API call on /timeline/self
+     *
+     * @return Response. Contains list of tweets by current user if successful, or error message if not.
+     * */
+    @GET
+    @Path("/timeline/self")
+    public Response getTimelineSelf(){
+        logger.info("GET request at /api/" + VERSION + "/twitter/timeline was triggered");
+        return twitterResourceService.getTimelineSelf() // Optional<List<Tweet>>
+                .map(tweets -> Response.ok(tweets).build()) // Optional<Response>
+                .orElse(Response.status(500).entity(ERROR_MESSAGE).build()); // Response (error or mapped)
+    }
+
+    /**
      * API call on /tweet
      *
      * @param post Message. Contains the content of the tweet to be posted.

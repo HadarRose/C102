@@ -21,11 +21,19 @@ public class TwitterResourceService {
     private static Logger logger = LoggerFactory.getLogger(TwitterResourceService.class);
     private Twitter twitter;
     private static String KEY = "now";
+    private static String KEY_SELF = "self";
+
+
     private LoadingCache<String, Optional<List<Status>>> cache = CacheBuilder.newBuilder().build(
             new CacheLoader<String, Optional<List<Status>>>() {
                 @Override
                 public Optional<List<Status>> load(String s) throws Exception {
-                    return Optional.ofNullable(twitter.getHomeTimeline());
+                    if(s.equals(KEY)){
+                        return Optional.ofNullable(twitter.getHomeTimeline());
+                    }
+                    else{
+                        return Optional.ofNullable(twitter.getUserTimeline());
+                    }
                 }
             }
     );
@@ -102,6 +110,22 @@ public class TwitterResourceService {
                     .map(this::statusToTweet) // convert to tweets
                     .collect(Collectors.toList())); // collect stream to list, wrap list in Optional
         } catch (Exception e) {
+            TwitterResourceExceptionHandler exceptionHandler = new TwitterResourceExceptionHandler(e);
+            logger.error("Error status: " + exceptionHandler.getStatusCode() + " with message: " + exceptionHandler.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * @return Optional<List < Tweet>> containing Status representation for tweets from the timeline posted by this user
+     */
+    public Optional<List<Tweet>> getTimelineSelf() {
+        logger.info("Retrieving own timeline");
+        try{
+            return Optional.ofNullable(this.cache.getUnchecked(KEY_SELF).get().stream() // stream statuses
+                    .map(this::statusToTweet) // convert statuses to tweets
+                    .collect(Collectors.toList())); // collect as list of tweets and wrap as optional
+        } catch (Exception e){
             TwitterResourceExceptionHandler exceptionHandler = new TwitterResourceExceptionHandler(e);
             logger.error("Error status: " + exceptionHandler.getStatusCode() + " with message: " + exceptionHandler.getMessage());
             return Optional.empty();
