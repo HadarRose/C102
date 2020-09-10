@@ -98,6 +98,32 @@ public class TwitterResourceServiceTest {
         assertFalse(tweets.isPresent());
     }
 
+    // test that getTimelineSelf produces correct response and cache
+    @Test
+    public void validTimelineSelf() throws TwitterException {
+        TwitterResourceService twitterResourceService = spy(new TwitterResourceService(mockedTwitter));
+        Tweet mockedTweet = mock(Tweet.class);
+        Status mockedStatus = mock(Status.class);
+        ResponseListStatusTestClass<Status> listStatus = new ResponseListStatusTestClass<>();
+        listStatus.add(mockedStatus);
+        listStatus.add(mockedStatus);
+        when(mockedTwitter.getUserTimeline()).thenReturn(listStatus);
+        doReturn(mockedTweet).when(twitterResourceService).statusToTweet(mockedStatus);
+        Optional<List<Tweet>> tweets = twitterResourceService.getTimelineSelf();
+        verify(twitterResourceService, times(2)).statusToTweet(mockedStatus);
+        tweets = twitterResourceService.getTimelineSelf(); // call it again to test caching
+        verify(mockedTwitter, times(1)).getUserTimeline(); // verify that the cache loaded only once
+    }
+
+    // tests that if the internal Twitter object throws an error, the method returns an empty optional
+    @Test()
+    public void invalidTimelineSelf() throws TwitterException {
+        TwitterResourceService twitterResourceService = new TwitterResourceService(mockedTwitter);
+        when(mockedTwitter.getUserTimeline()).thenThrow(TwitterException.class);
+        Optional<List<Tweet>> tweetList = twitterResourceService.getTimelineSelf();
+        assertFalse(tweetList.isPresent());
+    }
+
     /*TWEET TESTS*/
 
     /*tests that when TwitterResourceService.postTweet() is called, it will produce a status and send that

@@ -103,4 +103,29 @@ public class TwitterRequestResourceTest {
         ErrorMessage errorMessage = (ErrorMessage) r.getEntity();
         assertEquals(TwitterRequestResource.SERVICE_ERROR, errorMessage.getMessage());
     }
+
+    @Test
+    public void validTimelineSelf() {
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
+        List<Tweet> mockedList = mock(List.class);
+        when(mockedResourceServices.getTimelineSelf()).thenReturn(Optional.ofNullable(mockedList));
+
+        Response r = twitterRequestResource.getTimelineSelf();
+        verify(mockedResourceServices, times(1)).getTimelineSelf();
+        assertEquals(200, r.getStatus());
+        List<Tweet> statusList = (List<Tweet>) r.getEntity();
+        assertEquals(mockedList, statusList);
+    }
+
+    @Test
+    public void invalidTimelineSelf() {
+        TwitterRequestResource twitterRequestResource = new TwitterRequestResource(mockedResourceServices);
+        when(mockedResourceServices.getTimelineSelf()).thenReturn(Optional.empty());
+
+        Response r = twitterRequestResource.getTimelineSelf();
+        verify(mockedResourceServices, times(1)).getTimelineSelf();
+        assertEquals(500, r.getStatus());
+        ErrorMessage errorMessage = (ErrorMessage) r.getEntity();
+        assertEquals(TwitterRequestResource.SERVICE_ERROR, errorMessage.getMessage());
+    }
 }

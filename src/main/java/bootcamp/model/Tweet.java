@@ -1,7 +1,6 @@
 package bootcamp.model;
 
 import java.util.Date;
-// todo clean and update hashcode and toString and equals
 public class Tweet {
     private String message;
     private Date createdAt;
